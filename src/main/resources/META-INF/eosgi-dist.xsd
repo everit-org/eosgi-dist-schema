@@ -173,18 +173,18 @@ The schema of the XML that describes the distribution environment. The XML file 
 
     <complexType name="SystemPropertiesType">
       <sequence>
-        <element name="systemPropterty" type="tns:SystemPropertyType" maxOccurs="1" minOccurs="0"></element>
+        <element name="systemPropterty" type="tns:SystemPropertyType" maxOccurs="unbounded" minOccurs="0"></element>
       </sequence></complexType>
 
     <complexType name="VmOptionsType">
       <sequence>
-        <element name="vmOption" type="string" maxOccurs="1" minOccurs="0"></element>
+        <element name="vmOption" type="string" maxOccurs="unbounded" minOccurs="0"></element>
       </sequence>
     </complexType>
 
     <complexType name="CommandArgumentsType">
       <sequence>
-        <element name="commandArgument" type="string"></element>
+        <element name="commandArgument" type="string" maxOccurs="unbounded" minOccurs="0"></element>
       </sequence>
     </complexType>
 

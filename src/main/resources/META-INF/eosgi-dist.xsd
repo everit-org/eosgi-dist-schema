@@ -45,7 +45,7 @@
           </annotation>
         </element>
         <element name="launchConfiguration" type="tns:LaunchConfigurationType" maxOccurs="1" minOccurs="1"></element>
-        <element name="parseables" type="tns:ParseablesType" maxOccurs="1" minOccurs="0"></element>
+        <element name="parsables" type="tns:ParsablesType" maxOccurs="1" minOccurs="0"></element>
       </sequence>
       <attribute name="environmentId" type="string" use="required"></attribute>
       <attribute name="frameworkStartLevel" type="int" use="optional"></attribute>
@@ -86,14 +86,14 @@
         </sequence>
     </complexType>
 
-    <complexType name="ParseablesType">
+    <complexType name="ParsablesType">
         <sequence>
-            <element name="parseable" type="tns:ParseableType"
+            <element name="parsable" type="tns:ParsableType"
                 maxOccurs="unbounded"></element>
         </sequence>
     </complexType>
 
-    <complexType name="ParseableType">
+    <complexType name="ParsableType">
         <annotation>
           <documentation>A file that will be parsed with Velocity after distributing the artifacts. The following variables can be used:
 

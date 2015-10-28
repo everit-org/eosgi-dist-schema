@@ -44,11 +44,12 @@
             </documentation>
           </annotation>
         </element>
-        <element name="parseables" type="tns:ParseablesType" maxOccurs="1" minOccurs="0"></element>
         <element name="launchConfiguration" type="tns:LaunchConfigurationType" maxOccurs="1" minOccurs="1"></element>
+        <element name="parseables" type="tns:ParseablesType" maxOccurs="1" minOccurs="0"></element>
       </sequence>
       <attribute name="environmentId" type="string" use="required"></attribute>
-      <attribute name="copyMode" type="tns:CopyModeType" use="required"></attribute>
+      <attribute name="frameworkStartLevel" type="int" use="optional"></attribute>
+      <attribute name="bundleStartLevel" type="int" use="optional"></attribute>
     </complexType>
 
     <complexType name="ArtifactType">
@@ -75,10 +76,6 @@
       <attribute name="targetFile" type="string">
         <annotation>
           <documentation>The target name of the artifact file. If not specified, the target file will have the same name as the maven artifact file.</documentation>
-        </annotation></attribute>
-      <attribute name="copyMode" type="tns:CopyModeType">
-        <annotation>
-          <documentation>Either creating a symbolic link or copying the artifact file.</documentation>
         </annotation></attribute>
     </complexType>
 
@@ -145,12 +142,6 @@ The schema of the XML that describes the distribution environment. The XML file 
         </annotation></attribute>
     </complexType>
 
-    <simpleType name="CopyModeType">
-      <restriction base="string">
-        <enumeration value="file"></enumeration>
-        <enumeration value="symbolicLink"></enumeration>
-      </restriction>
-    </simpleType>
 
     <simpleType name="OSGiActionType">
       <restriction base="string">
@@ -173,7 +164,7 @@ The schema of the XML that describes the distribution environment. The XML file 
 
     <complexType name="SystemPropertiesType">
       <sequence>
-        <element name="systemPropterty" type="tns:SystemPropertyType" maxOccurs="unbounded" minOccurs="0"></element>
+        <any minOccurs="0" maxOccurs="unbounded"></any>
       </sequence></complexType>
 
     <complexType name="VmOptionsType">
@@ -189,12 +180,5 @@ The schema of the XML that describes the distribution environment. The XML file 
     </complexType>
 
 
-    <complexType name="SystemPropertyType">
-      <simpleContent>
-            <restriction base="string">
-          <attribute name="key" type="string"></attribute>
-        </restriction>
-      </simpleContent>
-    </complexType>
 
 </schema>

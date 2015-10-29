@@ -84,7 +84,8 @@
               *
             </Import-Package>
             <Export-Package>
-              org.everit.osgi.dev.eosgi.dist.schema
+              org.everit.osgi.dev.eosgi.dist.schema,
+              org.everit.osgi.dev.eosgi.dist.schema.util
             </Export-Package>
           </instructions>
         </configuration>
@@ -110,7 +111,7 @@
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <skip>true</skip>
+          <excludes>org/everit/osgi/dev/eosgi/dist/schema/xsd/*</excludes>
         </configuration>
       </plugin>
     </plugins>

@@ -44,7 +44,7 @@
             </documentation>
           </annotation>
         </element>
-        <element name="launchConfiguration" type="tns:LaunchConfigurationType" maxOccurs="1" minOccurs="1"></element>
+        <element name="environmentConfiguration" type="tns:EnvironmentConfigurationType" maxOccurs="1" minOccurs="1"></element>
         <element name="parsables" type="tns:ParsablesType" maxOccurs="1" minOccurs="0"></element>
       </sequence>
       <attribute name="environmentId" type="string" use="required"></attribute>
@@ -151,15 +151,17 @@ The schema of the XML that describes the distribution environment. The XML file 
       </restriction>
     </simpleType>
 
-    <complexType name="LaunchConfigurationType">
-      <sequence>
-        <element name="mainJar" type="string" minOccurs="0" maxOccurs="1"></element>
-        <element name="mainClass" type="string" minOccurs="0" maxOccurs="1"></element>
+    <complexType name="EnvironmentConfigurationType">
+      <complexContent>
+        <extension base="tns:EnvironmentOverrideType">
+          <sequence>
+            <element name="mainJar" type="string" minOccurs="0" maxOccurs="1"></element>
+            <element name="mainClass" type="string" minOccurs="0" maxOccurs="1"></element>
             <element name="classPath" type="string" maxOccurs="1" minOccurs="0"></element>
-            <element name="commandArguments" type="tns:CommandArgumentsType" maxOccurs="1" minOccurs="0"></element>
-        <element name="systemProperties" type="tns:SystemPropertiesType" maxOccurs="1" minOccurs="0"></element>
-        <element name="vmOptions" type="tns:VmOptionsType" maxOccurs="1" minOccurs="0"></element>
-      </sequence>
+            <element name="overrides" type="tns:OverridesType" maxOccurs="1" minOccurs="0"></element>
+          </sequence>
+        </extension>
+      </complexContent>
     </complexType>
 
     <complexType name="SystemPropertiesType">
@@ -173,12 +175,27 @@ The schema of the XML that describes the distribution environment. The XML file 
       </sequence>
     </complexType>
 
-    <complexType name="CommandArgumentsType">
+
+    <complexType name="EnvironmentOverrideType">
       <sequence>
-        <element name="commandArgument" type="string" maxOccurs="unbounded" minOccurs="0"></element>
+        <element name="systemProperties" type="tns:SystemPropertiesType" maxOccurs="1" minOccurs="0"></element>
+        <element name="vmOptions" type="tns:VmOptionsType" maxOccurs="1" minOccurs="0"></element>
+        <element name="useBy" type="tns:UseByType" maxOccurs="1" minOccurs="1"></element>
       </sequence>
     </complexType>
 
 
+    <simpleType name="UseByType">
+      <restriction base="string">
+        <enumeration value="INTEGRATION_TEST"></enumeration>
+        <enumeration value="PARSABLES"></enumeration>
+        <enumeration value="IDE"></enumeration>
+      </restriction>
+    </simpleType>
 
+    <complexType name="OverridesType">
+      <sequence>
+        <element name="override" type="tns:EnvironmentOverrideType" maxOccurs="unbounded" minOccurs="0"></element>
+      </sequence>
+    </complexType>
 </schema>

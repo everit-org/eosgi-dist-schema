@@ -24,53 +24,39 @@
 package org.everit.osgi.dev.eosgi.dist.schema.xsd;
 
 import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for OSGiActionType.
+ * <p>Java class for UseByType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="OSGiActionType">
+ * &lt;simpleType name="UseByType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="none"/>
- *     &lt;enumeration value="install"/>
- *     &lt;enumeration value="start"/>
+ *     &lt;enumeration value="INTEGRATION_TEST"/>
+ *     &lt;enumeration value="PARSABLES"/>
+ *     &lt;enumeration value="IDE"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
  * 
  */
-@XmlType(name = "OSGiActionType")
+@XmlType(name = "UseByType")
 @XmlEnum
-public enum OSGiActionType {
+public enum UseByType {
 
-    @XmlEnumValue("none")
-    NONE("none"),
-    @XmlEnumValue("install")
-    INSTALL("install"),
-    @XmlEnumValue("start")
-    START("start");
-    private final String value;
-
-    OSGiActionType(String v) {
-        value = v;
-    }
+    INTEGRATION_TEST,
+    PARSABLES,
+    IDE;
 
     public String value() {
-        return value;
+        return name();
     }
 
-    public static OSGiActionType fromValue(String v) {
-        for (OSGiActionType c: OSGiActionType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
+    public static UseByType fromValue(String v) {
+        return valueOf(v);
     }
 
 }

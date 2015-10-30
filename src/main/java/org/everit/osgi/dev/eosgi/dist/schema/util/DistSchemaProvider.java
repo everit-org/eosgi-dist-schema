@@ -29,7 +29,9 @@ import org.everit.osgi.dev.eosgi.dist.schema.xsd.EnvironmentConfigurationType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.EnvironmentOverrideType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ObjectFactory;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.OverridesType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.SystemPropertiesType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.UseByType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.VmOptionsType;
 import org.w3c.dom.Node;
 
 /**
@@ -54,28 +56,23 @@ public class DistSchemaProvider {
   }
 
   /**
-   * Returns the overrided distribution package read from the eosgi.dist.xml. The overrides section
-   * is processed based the given useBy argument. This means that the return objects
-   * {@link EnvironmentConfigurationType#getOverrides()} will return <code>null</code>.
+   * Applies the ovverride on the system properties and vm option of the environment configuration.
+   * The overrides section is processed based on the useBy argument. This means that the invocation
+   * of {@link EnvironmentConfigurationType#getOverrides()} will return <code>null</code>.
    */
-  public DistributionPackageType geOverridedDistributionPackage(final File distFolderFile,
+  public void applyOverride(
+      final EnvironmentConfigurationType environmentConfiguration,
       final UseByType useBy) {
-
-    DistributionPackageType distributionPackageType = readDistConfig(distFolderFile);
-
-    EnvironmentConfigurationType environmentConfiguration =
-        distributionPackageType.getEnvironmentConfiguration();
 
     UseByType defaultUseBy = environmentConfiguration.getUseBy();
 
     if (defaultUseBy.equals(useBy)) {
       environmentConfiguration.setOverrides(null);
-      return distributionPackageType;
     }
 
     OverridesType overrides = environmentConfiguration.getOverrides();
     if (overrides == null) {
-      return distributionPackageType;
+      return;
     }
 
     for (EnvironmentOverrideType environmentOverride : overrides.getOverride()) {
@@ -86,14 +83,36 @@ public class DistSchemaProvider {
     }
 
     environmentConfiguration.setOverrides(null);
+  }
+
+  /**
+   * Returns the overrided distribution package read from the eosgi.dist.xml. The overrides section
+   * is processed based the given useBy argument. This means that the returned objects
+   * {@link EnvironmentConfigurationType#getOverrides()} will return <code>null</code>.
+   */
+  public DistributionPackageType geOverridedDistributionPackage(final File distFolderFile,
+      final UseByType useBy) {
+
+    DistributionPackageType distributionPackageType = readDistConfig(distFolderFile);
+
+    applyOverride(distributionPackageType.getEnvironmentConfiguration(), useBy);
+
     return distributionPackageType;
   }
 
   private void overrideSystemProperties(final EnvironmentConfigurationType environmentConfiguration,
       final EnvironmentOverrideType environmentOverride) {
 
+    if (environmentOverride.getSystemProperties() == null) {
+      return;
+    }
     List<Object> overridingSystemProperties = environmentOverride.getSystemProperties().getAny();
+
+    if (environmentConfiguration.getSystemProperties() == null) {
+      environmentConfiguration.setSystemProperties(new SystemPropertiesType());
+    }
     List<Object> originalSystemProperties = environmentConfiguration.getSystemProperties().getAny();
+
     List<Object> systemPropertiesToAdd = new ArrayList<Object>();
 
     for (Object overridingSystemProperty : overridingSystemProperties) {
@@ -127,8 +146,16 @@ public class DistSchemaProvider {
   private void overrideVmOptions(final EnvironmentConfigurationType environmentConfiguration,
       final EnvironmentOverrideType environmentOverride) {
 
+    if (environmentOverride.getVmOptions() == null) {
+      return;
+    }
     List<String> overridingVmOptions = environmentOverride.getVmOptions().getVmOption();
+
+    if (environmentConfiguration.getVmOptions() == null) {
+      environmentConfiguration.setVmOptions(new VmOptionsType());
+    }
     List<String> originalVmOptions = environmentConfiguration.getVmOptions().getVmOption();
+
     List<String> vmOptionsToAdd = new ArrayList<String>();
 
     for (String overridingVmOption : overridingVmOptions) {

@@ -25,24 +25,22 @@ package org.everit.osgi.dev.eosgi.dist.schema.xsd;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for EnvironmentOverrideType complex type.
+ * <p>Java class for LaunchConfigType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="EnvironmentOverrideType">
+ * &lt;complexType name="LaunchConfigType">
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;extension base="{http://everit.org/eosgi/dist/definition/4.0.0}AbstractLaunchConfigType">
  *       &lt;sequence>
- *         &lt;element name="useBy" type="{http://everit.org/eosgi/dist/definition/4.0.0}UseByType"/>
+ *         &lt;element name="overrides" type="{http://everit.org/eosgi/dist/definition/4.0.0}LaunchConfigOverridesType" minOccurs="0"/>
  *       &lt;/sequence>
- *     &lt;/restriction>
+ *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -50,37 +48,37 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EnvironmentOverrideType", propOrder = {
-    "useBy"
+@XmlType(name = "LaunchConfigType", propOrder = {
+    "overrides"
 })
-public class EnvironmentOverrideType {
+public class LaunchConfigType
+    extends AbstractLaunchConfigType
+{
 
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "string")
-    protected UseByType useBy;
+    protected LaunchConfigOverridesType overrides;
 
     /**
-     * Gets the value of the useBy property.
+     * Gets the value of the overrides property.
      * 
      * @return
      *     possible object is
-     *     {@link UseByType }
+     *     {@link LaunchConfigOverridesType }
      *     
      */
-    public UseByType getUseBy() {
-        return useBy;
+    public LaunchConfigOverridesType getOverrides() {
+        return overrides;
     }
 
     /**
-     * Sets the value of the useBy property.
+     * Sets the value of the overrides property.
      * 
      * @param value
      *     allowed object is
-     *     {@link UseByType }
+     *     {@link LaunchConfigOverridesType }
      *     
      */
-    public void setUseBy(UseByType value) {
-        this.useBy = value;
+    public void setOverrides(LaunchConfigOverridesType value) {
+        this.overrides = value;
     }
 
 }

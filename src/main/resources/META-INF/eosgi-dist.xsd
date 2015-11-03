@@ -16,186 +16,229 @@
     limitations under the License.
 
 -->
-<schema targetNamespace="http://everit.org/eosgi/dist/definition/4.0.0"
-    elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
-    xmlns:tns="http://everit.org/eosgi/dist/definition/4.0.0">
+<schema targetNamespace="http://everit.org/eosgi/dist/definition/4.0.0" elementFormDefault="qualified"
+  xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://everit.org/eosgi/dist/definition/4.0.0">
 
+  <annotation>
+    <documentation>
+      The schema of the XML that describes the distribution environment. The XML file is parsed with Velocity before
+      processing. The folling variables can be used:
+      <ul>
+        <li>distributableArtifacts: List of DistributableArtifact objects</li>
+        <li>environment: An EnvironmentConfiguration object</li>
+        <li>copyMode: The default copy mode that should be used during distributing artifacts</li>
+        <li>distUtil: A class that contains util functions that help creating a distribution package.</li>
+      </ul>
+    </documentation>
+  </annotation>
+
+  <element name="distributionPackage" type="tns:DistributionPackageType">
     <annotation>
-      <documentation>The schema of the XML that describes the distribution environment. The XML file is parsed with Velocity before processing. The folling variables can be used:
-<ul>
-  <li>distributableArtifacts: List of DistributableArtifact objects</li>
-  <li>environment: An EnvironmentConfiguration object</li>
-  <li>copyMode: The default copy mode that should be used during distributing artifacts</li>
-  <li>distUtil: A class that contains util functions that help creating a distribution package.</li>
-</ul>
-</documentation></annotation>
-    <element name="distributionPackage" type="tns:DistributionPackageType">
+      <documentation></documentation>
+    </annotation>
+  </element>
+
+  <complexType name="DistributionPackageType">
+    <sequence maxOccurs="1" minOccurs="0">
+      <element name="artifacts" type="tns:ArtifactsType" maxOccurs="1" minOccurs="0">
         <annotation>
-          <documentation></documentation>
+          <documentation>
+            Artifacts that should be resolved (downloaded and copied) into the distribution package.
+          </documentation>
         </annotation>
-    </element>
+      </element>
+      <element name="environmentConfiguration" type="tns:EnvironmentConfigurationType" maxOccurs="1" minOccurs="1"></element>
+      <element name="parsables" type="tns:ParsablesType" maxOccurs="1" minOccurs="0"></element>
+    </sequence>
+    <attribute name="environmentId" type="string" use="required"></attribute>
+    <attribute name="frameworkStartLevel" type="int" use="optional"></attribute>
+    <attribute name="bundleStartLevel" type="int" use="optional"></attribute>
+  </complexType>
 
-    <complexType name="DistributionPackageType">
-      <sequence maxOccurs="1" minOccurs="0">
-        <element name="artifacts" type="tns:ArtifactsType" maxOccurs="1" minOccurs="0">
-          <annotation>
-            <documentation>
-              Artifacts that should be resolved (downloaded and copied) into the distribution package.
-            </documentation>
-          </annotation>
-        </element>
-        <element name="environmentConfiguration" type="tns:EnvironmentConfigurationType" maxOccurs="1" minOccurs="1"></element>
-        <element name="parsables" type="tns:ParsablesType" maxOccurs="1" minOccurs="0"></element>
-      </sequence>
-      <attribute name="environmentId" type="string" use="required"></attribute>
-      <attribute name="frameworkStartLevel" type="int" use="optional"></attribute>
-      <attribute name="bundleStartLevel" type="int" use="optional"></attribute>
-    </complexType>
-
-    <complexType name="ArtifactType">
+  <complexType name="ArtifactType">
+    <annotation>
+      <documentation>A maven artifact with additional information.</documentation>
+    </annotation>
+    <sequence>
+      <element name="groupId" type="string" minOccurs="1" maxOccurs="1"></element>
+      <element name="artifactId" type="string" minOccurs="1" maxOccurs="1"></element>
+      <element name="version" type="string" minOccurs="1" maxOccurs="1"></element>
+      <element name="type" type="string" minOccurs="0" maxOccurs="1"></element>
+      <element name="classifier" type="string" minOccurs="0" maxOccurs="1"></element>
+      <element name="bundle" type="tns:BundleDataType" minOccurs="0" maxOccurs="1">
         <annotation>
-          <documentation>A maven artifact with additional information.</documentation>
+          <documentation>In case this is an OSGi bundle, additional behavior can be defined.</documentation>
         </annotation>
-        <sequence>
-        <element name="groupId" type="string" minOccurs="1" maxOccurs="1"></element>
-        <element name="artifactId" type="string" minOccurs="1" maxOccurs="1"></element>
-        <element name="version" type="string" minOccurs="1" maxOccurs="1"></element>
-        <element name="type" type="string" minOccurs="0" maxOccurs="1"></element>
-        <element name="classifier" type="string" minOccurs="0" maxOccurs="1"></element>
-        <element name="bundle" type="tns:BundleDataType" minOccurs="0" maxOccurs="1">
-          <annotation>
-            <documentation>In case this is an OSGi bundle, additional behavior can be defined.</documentation>
-          </annotation>
-        </element>
-      </sequence>
-      <attribute name="targetFolder" type="string">
+      </element>
+    </sequence>
+    <attribute name="targetFolder" type="string">
+      <annotation>
+        <documentation>The target folder where the artifact should be copied to inside the distribution package.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="targetFile" type="string">
+      <annotation>
+        <documentation>The target name of the artifact file. If not specified, the target file will have the same name
+          as the maven artifact file.
+        </documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <complexType name="ArtifactsType">
+    <sequence>
+      <element name="artifact" type="tns:ArtifactType" maxOccurs="unbounded"></element>
+    </sequence>
+  </complexType>
+
+  <complexType name="ParsablesType">
+    <sequence>
+      <element name="parsable" type="tns:ParsableType" maxOccurs="unbounded"></element>
+    </sequence>
+  </complexType>
+
+  <complexType name="ParsableType">
+    <annotation>
+      <documentation>
+        A file that will be parsed with Velocity after distributing the artifacts. The following variables can be used:
+
+        The schema of the XML that describes the distribution environment. The XML file is parsed with Velocity before
+        processing. The folling variables can be used:
+        <ul>
+          <li>distributableArtifacts: List of DistributableArtifact objects</li>
+          <li>environment: An EnvironmentConfiguration object</li>
+          <li>distributionPackage: The content of the distribution package XML (that is described by this schema)</li>
+          <li>escapeTool: A simply utility class that can be used to do escapes</li>
+          <li>distUtil: A class that contains util functions that help creating a distribution package.</li>
+        </ul>
+      </documentation>
+    </annotation>
+    <attribute name="path" type="string">
+      <annotation>
+        <documentation>Path of the parseable file.</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="encoding" type="string">
+      <annotation>
+        <documentation>The encoding of the parseable file.</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <complexType name="BundleDataType">
+    <sequence>
+      <element name="symbolicName" type="string" minOccurs="1" maxOccurs="1">
         <annotation>
-          <documentation>The target folder where the artifact should be copied to inside the distribution package.</documentation>
+          <documentation>Symbolic name of the bundle</documentation>
         </annotation>
-      </attribute>
-      <attribute name="targetFile" type="string">
+      </element>
+      <element name="version" type="string" minOccurs="1" maxOccurs="1">
         <annotation>
-          <documentation>The target name of the artifact file. If not specified, the target file will have the same name as the maven artifact file.</documentation>
-        </annotation></attribute>
-    </complexType>
-
-    <complexType name="ArtifactsType">
-        <sequence>
-            <element name="artifact" type="tns:ArtifactType"
-                maxOccurs="unbounded"></element>
-        </sequence>
-    </complexType>
-
-    <complexType name="ParsablesType">
-        <sequence>
-            <element name="parsable" type="tns:ParsableType"
-                maxOccurs="unbounded"></element>
-        </sequence>
-    </complexType>
-
-    <complexType name="ParsableType">
-        <annotation>
-          <documentation>A file that will be parsed with Velocity after distributing the artifacts. The following variables can be used:
-
-The schema of the XML that describes the distribution environment. The XML file is parsed with Velocity before processing. The folling variables can be used:
-<ul>
-  <li>distributableArtifacts: List of DistributableArtifact objects</li>
-  <li>environment: An EnvironmentConfiguration object</li>
-  <li>distributionPackage: The content of the distribution package XML (that is described by this schema)</li>
-  <li>escapeTool:  A simply utility class that can be used to do escapes</li>
-  <li>distUtil: A class that contains util functions that help creating a distribution package.</li>
-</ul>
-</documentation>
+          <documentation>Version of the bundle</documentation>
         </annotation>
-        <attribute name="path" type="string" >
-          <annotation>
-            <documentation>Path of the parseable  file.</documentation>
-          </annotation></attribute>
-        <attribute name="encoding" type="string" >
-          <annotation>
-            <documentation>The encoding of the parseable file.</documentation>
-          </annotation></attribute>
-    </complexType>
-
-    <complexType name="BundleDataType">
-      <sequence>
-        <element name="symbolicName" type="string" minOccurs="1" maxOccurs="1">
-          <annotation>
-            <documentation>Symbolic name of the bundle</documentation>
-          </annotation></element>
-            <element name="version" type="string" minOccurs="1" maxOccurs="1">
-              <annotation>
-                <documentation>Version of the bundle</documentation>
-              </annotation></element>
-            <element name="location" type="string" minOccurs="1" maxOccurs="1">
-              <annotation>
-                <documentation>The file URI that can be used to update/install the bundle. It might start with "reference:file:" or "file:".</documentation>
-              </annotation></element>
-        </sequence>
-      <attribute name="action" type="tns:OSGiActionType" use="required">
+      </element>
+      <element name="location" type="string" minOccurs="1" maxOccurs="1">
         <annotation>
-          <documentation>An action that should be done with the bundle</documentation>
-        </annotation></attribute>
-      <attribute name="startLevel" type="int" use="optional">
-        <annotation>
-          <documentation>Start level of the bundle (optional)</documentation>
-        </annotation></attribute>
-    </complexType>
+          <documentation>The file URI that can be used to update/install the bundle. It might start with
+            "reference:file:" or "file:".
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute name="action" type="tns:OSGiActionType" use="required">
+      <annotation>
+        <documentation>An action that should be done with the bundle</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="startLevel" type="int" use="optional">
+      <annotation>
+        <documentation>Start level of the bundle (optional)</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
 
+  <simpleType name="OSGiActionType">
+    <restriction base="string">
+      <enumeration value="none"></enumeration>
+      <enumeration value="install"></enumeration>
+      <enumeration value="start"></enumeration>
+    </restriction>
+  </simpleType>
 
-    <simpleType name="OSGiActionType">
-      <restriction base="string">
-        <enumeration value="none"></enumeration>
-        <enumeration value="install"></enumeration>
-        <enumeration value="start"></enumeration>
-      </restriction>
-    </simpleType>
+  <complexType name="EnvironmentConfigurationType">
+    <sequence>
+      <element name="mainJar" type="string" minOccurs="0" maxOccurs="1"></element>
+      <element name="mainClass" type="string" minOccurs="0" maxOccurs="1"></element>
+      <element name="classPath" type="string" maxOccurs="1" minOccurs="0"></element>
+      <element name="launchConfig" type="tns:LaunchConfigType" maxOccurs="1" minOccurs="0"></element>
+    </sequence>
+  </complexType>
 
-    <complexType name="EnvironmentConfigurationType">
-      <complexContent>
-        <extension base="tns:EnvironmentOverrideType">
-          <sequence>
-            <element name="mainJar" type="string" minOccurs="0" maxOccurs="1"></element>
-            <element name="mainClass" type="string" minOccurs="0" maxOccurs="1"></element>
-            <element name="classPath" type="string" maxOccurs="1" minOccurs="0"></element>
-            <element name="overrides" type="tns:OverridesType" maxOccurs="1" minOccurs="0"></element>
-          </sequence>
-        </extension>
-      </complexContent>
-    </complexType>
+  <complexType name="SystemPropertiesType">
+    <sequence>
+      <any minOccurs="0" maxOccurs="unbounded"></any>
+    </sequence>
+  </complexType>
 
-    <complexType name="SystemPropertiesType">
-      <sequence>
+  <complexType name="VmArgumentsType">
+    <sequence>
         <any minOccurs="0" maxOccurs="unbounded"></any>
-      </sequence></complexType>
+    </sequence>
+  </complexType>
 
-    <complexType name="VmOptionsType">
-      <sequence>
-        <element name="vmOption" type="string" maxOccurs="unbounded" minOccurs="0"></element>
-      </sequence>
-    </complexType>
+  <complexType name="EnvironmentOverrideType">
+    <sequence>
+      <element name="useBy" type="tns:UseByType" maxOccurs="1" minOccurs="1"></element>
+    </sequence>
+  </complexType>
 
+  <complexType name="AbstractLaunchConfigType" abstract="true">
+    <sequence>
+      <element name="systemProperties" type="tns:SystemPropertiesType" maxOccurs="1" minOccurs="0"></element>
+      <element name="vmArguments" type="tns:VmArgumentsType" maxOccurs="1" minOccurs="0"></element>
+      <element name="programArguments" type="tns:ProgramArgumentsType" maxOccurs="1" minOccurs="0"></element>
+    </sequence>
+  </complexType>
 
-    <complexType name="EnvironmentOverrideType">
-      <sequence>
-        <element name="systemProperties" type="tns:SystemPropertiesType" maxOccurs="1" minOccurs="0"></element>
-        <element name="vmOptions" type="tns:VmOptionsType" maxOccurs="1" minOccurs="0"></element>
-        <element name="useBy" type="tns:UseByType" maxOccurs="1" minOccurs="1"></element>
-      </sequence>
-    </complexType>
+  <simpleType name="UseByType">
+    <restriction base="string">
+      <enumeration value="INTEGRATION_TEST"></enumeration>
+      <enumeration value="PARSABLES"></enumeration>
+      <enumeration value="IDE"></enumeration>
+    </restriction>
+  </simpleType>
 
+  <complexType name="LaunchConfigType">
+    <complexContent>
+      <extension base="tns:AbstractLaunchConfigType">
+        <sequence>
+          <element name="overrides" type="tns:LaunchConfigOverridesType" maxOccurs="1" minOccurs="0"></element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
 
-    <simpleType name="UseByType">
-      <restriction base="string">
-        <enumeration value="INTEGRATION_TEST"></enumeration>
-        <enumeration value="PARSABLES"></enumeration>
-        <enumeration value="IDE"></enumeration>
-      </restriction>
-    </simpleType>
+  <complexType name="LaunchConfigOverridesType">
+    <sequence>
+      <element name="override" type="tns:LaunchConfigOverrideType" maxOccurs="unbounded" minOccurs="0"></element>
+    </sequence>
+  </complexType>
 
-    <complexType name="OverridesType">
-      <sequence>
-        <element name="override" type="tns:EnvironmentOverrideType" maxOccurs="unbounded" minOccurs="0"></element>
-      </sequence>
-    </complexType>
+  <complexType name="LaunchConfigOverrideType">
+    <complexContent>
+      <extension base="tns:AbstractLaunchConfigType">
+        <sequence>
+          <element name="useBy" type="tns:UseByType" maxOccurs="1" minOccurs="1"></element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="ProgramArgumentsType">
+    <sequence>
+      <any minOccurs="0" maxOccurs="unbounded"></any>
+    </sequence>
+  </complexType>
+
 </schema>

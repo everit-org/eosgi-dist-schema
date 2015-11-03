@@ -23,24 +23,25 @@
 
 package org.everit.osgi.dev.eosgi.dist.schema.xsd;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for EnvironmentOverrideType complex type.
+ * <p>Java class for ProgramArgumentsType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="EnvironmentOverrideType">
+ * &lt;complexType name="ProgramArgumentsType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="useBy" type="{http://everit.org/eosgi/dist/definition/4.0.0}UseByType"/>
+ *         &lt;any maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -50,37 +51,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EnvironmentOverrideType", propOrder = {
-    "useBy"
+@XmlType(name = "ProgramArgumentsType", propOrder = {
+    "any"
 })
-public class EnvironmentOverrideType {
+public class ProgramArgumentsType {
 
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "string")
-    protected UseByType useBy;
-
-    /**
-     * Gets the value of the useBy property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link UseByType }
-     *     
-     */
-    public UseByType getUseBy() {
-        return useBy;
-    }
+    @XmlAnyElement(lax = true)
+    protected List<Object> any;
 
     /**
-     * Sets the value of the useBy property.
+     * Gets the value of the any property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link UseByType }
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the any property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getAny().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link Object }
+     * 
+     * 
      */
-    public void setUseBy(UseByType value) {
-        this.useBy = value;
+    public List<Object> getAny() {
+        if (any == null) {
+            any = new ArrayList<Object>();
+        }
+        return this.any;
     }
 
 }

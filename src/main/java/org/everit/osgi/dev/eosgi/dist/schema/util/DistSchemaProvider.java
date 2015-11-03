@@ -25,13 +25,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.DistributionPackageType;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.EnvironmentConfigurationType;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.EnvironmentOverrideType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigOverrideType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigOverridesType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ObjectFactory;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.OverridesType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.ProgramArgumentsType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.SystemPropertiesType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.UseByType;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.VmOptionsType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.VmArgumentsType;
 import org.w3c.dom.Node;
 
 /**
@@ -56,125 +57,132 @@ public class DistSchemaProvider {
   }
 
   /**
-   * Applies the ovverride on the system properties and vm option of the environment configuration.
-   * The overrides section is processed based on the useBy argument. This means that the invocation
-   * of {@link EnvironmentConfigurationType#getOverrides()} will return <code>null</code>.
+   * Applies the ovverrides on a LaunchConfig. The overrides section is processed based on the useBy
+   * argument. This means that the invocation of {@link LaunchConfigType#getOverrides()} will return
+   * <code>null</code>.
    */
   public void applyOverride(
-      final EnvironmentConfigurationType environmentConfiguration,
+      final LaunchConfigType launchConfig,
       final UseByType useBy) {
 
-    UseByType defaultUseBy = environmentConfiguration.getUseBy();
-
-    if (defaultUseBy.equals(useBy)) {
-      environmentConfiguration.setOverrides(null);
-    }
-
-    OverridesType overrides = environmentConfiguration.getOverrides();
-    if (overrides == null) {
+    LaunchConfigOverridesType launchConfigOverrides = launchConfig.getOverrides();
+    if (launchConfigOverrides == null) {
       return;
     }
 
-    for (EnvironmentOverrideType environmentOverride : overrides.getOverride()) {
-      if (environmentOverride.getUseBy().equals(useBy)) {
-        overrideSystemProperties(environmentConfiguration, environmentOverride);
-        overrideVmOptions(environmentConfiguration, environmentOverride);
+    for (LaunchConfigOverrideType launchConfigOverride : launchConfigOverrides.getOverride()) {
+      if (launchConfigOverride.getUseBy().equals(useBy)) {
+
+        launchConfig.setSystemProperties(
+            overrideSystemProperties(
+                launchConfig.getSystemProperties(), launchConfigOverride.getSystemProperties()));
+
+        launchConfig.setVmArguments(
+            overrideVmArguments(
+                launchConfig.getVmArguments(), launchConfigOverride.getVmArguments()));
+
+        launchConfig.setProgramArguments(
+            overridePropgramArguments(
+                launchConfig.getProgramArguments(), launchConfigOverride.getProgramArguments()));
       }
     }
 
-    environmentConfiguration.setOverrides(null);
+    launchConfig.setOverrides(null);
   }
 
   /**
    * Returns the overrided distribution package read from the eosgi.dist.xml. The overrides section
    * is processed based the given useBy argument. This means that the returned objects
-   * {@link EnvironmentConfigurationType#getOverrides()} will return <code>null</code>.
+   * {@link LaunchConfigType#getOverrides()} will return <code>null</code>.
    */
   public DistributionPackageType geOverridedDistributionPackage(final File distFolderFile,
       final UseByType useBy) {
 
     DistributionPackageType distributionPackageType = readDistConfig(distFolderFile);
 
-    applyOverride(distributionPackageType.getEnvironmentConfiguration(), useBy);
+    applyOverride(distributionPackageType.getEnvironmentConfiguration().getLaunchConfig(), useBy);
 
     return distributionPackageType;
   }
 
-  private void overrideSystemProperties(final EnvironmentConfigurationType environmentConfiguration,
-      final EnvironmentOverrideType environmentOverride) {
+  private void override(final List<Object> originals, final List<Object> overrides) {
 
-    if (environmentOverride.getSystemProperties() == null) {
-      return;
-    }
-    List<Object> overridingSystemProperties = environmentOverride.getSystemProperties().getAny();
+    List<Object> news = new ArrayList<Object>();
 
-    if (environmentConfiguration.getSystemProperties() == null) {
-      environmentConfiguration.setSystemProperties(new SystemPropertiesType());
-    }
-    List<Object> originalSystemProperties = environmentConfiguration.getSystemProperties().getAny();
+    for (Object override : overrides) {
 
-    List<Object> systemPropertiesToAdd = new ArrayList<Object>();
-
-    for (Object overridingSystemProperty : overridingSystemProperties) {
-
-      Node overridingSystemPropertyNode = (Node) overridingSystemProperty;
-      String overridingSystemPropertyKey = overridingSystemPropertyNode.getNodeName();
-      String overridingSystemPropertyValue = overridingSystemPropertyNode.getTextContent();
+      Node overridingNode = (Node) override;
+      String overridingKey = overridingNode.getNodeName();
+      String overridingValue = overridingNode.getTextContent();
 
       boolean overrided = false;
 
-      for (Object originalSystemProperty : originalSystemProperties) {
+      for (Object original : originals) {
 
-        Node originalSystemPropertyNode = (Node) originalSystemProperty;
-        String originalSystemPropertyKey = originalSystemPropertyNode.getNodeName();
+        Node originalNode = (Node) original;
+        String originalKey = originalNode.getNodeName();
 
-        if (originalSystemPropertyKey.equals(overridingSystemPropertyKey)) {
-          originalSystemPropertyNode.setTextContent(overridingSystemPropertyValue);
+        if (originalKey.equals(overridingKey)) {
+          originalNode.setTextContent(overridingValue);
           overrided = true;
         }
       }
 
       if (!overrided) {
-        systemPropertiesToAdd.add(overridingSystemProperty);
+        news.add(override);
       }
 
     }
 
-    originalSystemProperties.addAll(systemPropertiesToAdd);
+    originals.addAll(news);
   }
 
-  private void overrideVmOptions(final EnvironmentConfigurationType environmentConfiguration,
-      final EnvironmentOverrideType environmentOverride) {
+  private ProgramArgumentsType overridePropgramArguments(final ProgramArgumentsType original,
+      final ProgramArgumentsType override) {
 
-    if (environmentOverride.getVmOptions() == null) {
-      return;
+    ProgramArgumentsType rval = original;
+    if (rval == null) {
+      rval = new ProgramArgumentsType();
     }
-    List<String> overridingVmOptions = environmentOverride.getVmOptions().getVmOption();
-
-    if (environmentConfiguration.getVmOptions() == null) {
-      environmentConfiguration.setVmOptions(new VmOptionsType());
-    }
-    List<String> originalVmOptions = environmentConfiguration.getVmOptions().getVmOption();
-
-    List<String> vmOptionsToAdd = new ArrayList<String>();
-
-    for (String overridingVmOption : overridingVmOptions) {
-
-      boolean overrided = false;
-
-      for (String originalVmOption : originalVmOptions) {
-
-        if (originalVmOption.equals(overridingVmOption)) {
-          overrided = true;
-        }
-      }
-
-      if (!overrided) {
-        vmOptionsToAdd.add(overridingVmOption);
-      }
+    if (override == null) {
+      return rval;
     }
 
-    originalVmOptions.addAll(vmOptionsToAdd);
+    override(rval.getAny(), override.getAny());
+
+    return rval;
+  }
+
+  private SystemPropertiesType overrideSystemProperties(final SystemPropertiesType original,
+      final SystemPropertiesType override) {
+
+    SystemPropertiesType rval = original;
+    if (rval == null) {
+      rval = new SystemPropertiesType();
+    }
+    if (override == null) {
+      return rval;
+    }
+
+    override(rval.getAny(), override.getAny());
+
+    return rval;
+  }
+
+  private VmArgumentsType overrideVmArguments(final VmArgumentsType original,
+      final VmArgumentsType override) {
+
+    VmArgumentsType rval = original;
+    if (rval == null) {
+      rval = new VmArgumentsType();
+    }
+    if (override == null) {
+      return rval;
+    }
+
+    override(rval.getAny(), override.getAny());
+
+    return rval;
   }
 
   /**

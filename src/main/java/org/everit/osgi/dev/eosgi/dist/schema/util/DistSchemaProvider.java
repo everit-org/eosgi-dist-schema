@@ -105,6 +105,11 @@ public class DistSchemaProvider {
     return distributionPackageType;
   }
 
+  public EnvironmentConfigurationDTO getEnvironmentConfiguration(final File distFolderFile,
+      final UseByType useBy) {
+    return null; // TODO implement
+  }
+
   private void override(final List<Object> originals, final List<Object> overrides) {
 
     List<Object> news = new ArrayList<Object>();

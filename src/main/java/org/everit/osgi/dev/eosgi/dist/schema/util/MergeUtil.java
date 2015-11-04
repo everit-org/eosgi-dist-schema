@@ -34,7 +34,11 @@ public final class MergeUtil {
       final Map<String, String> default1,
       final Map<String, String> default2) {
 
-    Map<String, String> rval = new HashMap<String, String>(default1);
+    Map<String, String> rval = new HashMap<String, String>();
+
+    if ((default1 != null) && !default1.isEmpty()) {
+      rval.putAll(default1);
+    }
 
     if ((default2 == null) || default2.isEmpty()) {
       return rval;
@@ -68,7 +72,11 @@ public final class MergeUtil {
       final Map<String, String> default2,
       final Map<String, String> override2) {
 
-    Map<String, String> cleaned = new HashMap<String, String>(override1);
+    Map<String, String> cleaned = new HashMap<String, String>();
+
+    if ((override1 != null) && !override1.isEmpty()) {
+      cleaned.putAll(override1);
+    }
 
     if ((default2 != null) && !default2.isEmpty()) {
       for (Entry<String, String> overrideEntry : default2.entrySet()) {
@@ -77,7 +85,7 @@ public final class MergeUtil {
         String overrideValue = overrideEntry.getValue();
 
         if ((overrideValue == null) || overrideValue.isEmpty()
-            || override1.containsKey(overrideKey)) {
+            || ((override1 != null) && override1.containsKey(overrideKey))) {
           cleaned.remove(overrideKey);
         }
       }

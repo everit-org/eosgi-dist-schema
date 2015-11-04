@@ -25,6 +25,7 @@ public class MergeUtilTest {
 
   @Test
   public void testMergeDefaults() {
+
     Map<String, String> default1 = new HashMap<String, String>();
     default1.put("k1", "v1");
     default1.put("k2", "v2");
@@ -42,6 +43,23 @@ public class MergeUtilTest {
     Assert.assertEquals(null, result.get("k2"));
     Assert.assertEquals("v3", result.get("k3"));
     Assert.assertEquals("v4", result.get("k4"));
+  }
+
+  @Test
+  public void testMergeDefaultsWithNull() {
+
+    Map<String, String> default0 = new HashMap<String, String>();
+    default0.put("k1", "v1");
+
+    Map<String, String> result = MergeUtil.mergeDefaults(null, default0);
+
+    Assert.assertEquals(1, result.size());
+    Assert.assertEquals("v1", result.get("k1"));
+
+    result = MergeUtil.mergeDefaults(default0, null);
+
+    Assert.assertEquals(1, result.size());
+    Assert.assertEquals("v1", result.get("k1"));
   }
 
   @Test
@@ -67,6 +85,7 @@ public class MergeUtilTest {
     override2.put("k7", "v7");
 
     Map<String, String> result = MergeUtil.mergeOverrides(override1, default2, override2);
+
     Assert.assertEquals(5, result.size());
     Assert.assertEquals(null, result.get("k1"));
     Assert.assertEquals("x3", result.get("k2"));
@@ -75,6 +94,28 @@ public class MergeUtilTest {
     Assert.assertEquals("v5", result.get("k5"));
     Assert.assertEquals(null, result.get("k6"));
     Assert.assertEquals("v7", result.get("k7"));
+  }
+
+  @Test
+  public void testMergeOverridesWithNull() {
+
+    Map<String, String> override0 = new HashMap<String, String>();
+    override0.put("k1", "v1");
+
+    Map<String, String> result = MergeUtil.mergeOverrides(null, null, override0);
+
+    Assert.assertEquals(1, result.size());
+    Assert.assertEquals("v1", result.get("k1"));
+
+    result = MergeUtil.mergeOverrides(null, override0, null);
+
+    Assert.assertEquals(0, result.size());
+    Assert.assertEquals(null, result.get("k1"));
+
+    result = MergeUtil.mergeOverrides(override0, null, null);
+
+    Assert.assertEquals(1, result.size());
+    Assert.assertEquals("v1", result.get("k1"));
   }
 
 }

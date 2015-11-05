@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.DistributionPackageType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.EnvironmentConfigurationType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigOverrideType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigOverridesType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigType;
@@ -91,11 +92,67 @@ public class DistSchemaProvider {
   }
 
   /**
+   * Returns the {@link EnvironmentConfigurationDTO} for the specified usage.
+   */
+  public EnvironmentConfigurationDTO getEnvironmentConfiguration(final File distFolderFile,
+      final UseByType useBy) {
+
+    DistributionPackageType distributionPackage =
+        getOverridedDistributionPackage(distFolderFile, useBy);
+
+    EnvironmentConfigurationType environmentConfiguration =
+        distributionPackage.getEnvironmentConfiguration();
+
+    String mainJar = environmentConfiguration.getMainJar();
+    String mainClass = environmentConfiguration.getMainClass();
+    String classpath = environmentConfiguration.getClassPath();
+
+    LaunchConfigType launchConfig = environmentConfiguration.getLaunchConfig();
+
+    List<String> systemProperties = new ArrayList<String>();
+    SystemPropertiesType systemPropertiesType = launchConfig.getSystemProperties();
+    if (systemPropertiesType != null) {
+      List<Object> systemPropertyNodes = systemPropertiesType.getAny();
+      for (Object systemPropertyNode : systemPropertyNodes) {
+        Node node = (Node) systemPropertyNode;
+        String systemPropertyKey = node.getNodeName();
+        String systemPropertyValue = node.getTextContent();
+        systemProperties.add("-D" + systemPropertyKey + "=" + systemPropertyValue);
+      }
+    }
+
+    List<String> vmArguments = new ArrayList<String>();
+    VmArgumentsType vmArgumentsType = launchConfig.getVmArguments();
+    if (vmArgumentsType != null) {
+      List<Object> vmArgumentNodes = vmArgumentsType.getAny();
+      for (Object vmArgumentNode : vmArgumentNodes) {
+        Node node = (Node) vmArgumentNode;
+        String vmArgumentValue = node.getTextContent();
+        vmArguments.add(vmArgumentValue);
+      }
+    }
+
+    List<String> programArguments = new ArrayList<String>();
+    ProgramArgumentsType programArgumentsType = launchConfig.getProgramArguments();
+    if (programArgumentsType != null) {
+      List<Object> programArgumentNodes = programArgumentsType.getAny();
+      for (Object programArgumentNode : programArgumentNodes) {
+        Node node = (Node) programArgumentNode;
+        String programArgumentValue = node.getTextContent();
+        programArguments.add(programArgumentValue);
+      }
+    }
+
+    return new EnvironmentConfigurationDTO(
+        mainJar, mainClass, classpath, systemProperties, vmArguments, programArguments);
+  }
+
+  /**
    * Returns the overrided distribution package read from the eosgi.dist.xml. The overrides section
    * is processed based the given useBy argument. This means that the returned objects
    * {@link LaunchConfigType#getOverrides()} will return <code>null</code>.
    */
-  public DistributionPackageType geOverridedDistributionPackage(final File distFolderFile,
+  public DistributionPackageType getOverridedDistributionPackage(final File distFolderFile,
       final UseByType useBy) {
 
     DistributionPackageType distributionPackageType = readDistConfig(distFolderFile);
@@ -103,11 +160,6 @@ public class DistSchemaProvider {
     applyOverride(distributionPackageType.getEnvironmentConfiguration().getLaunchConfig(), useBy);
 
     return distributionPackageType;
-  }
-
-  public EnvironmentConfigurationDTO getEnvironmentConfiguration(final File distFolderFile,
-      final UseByType useBy) {
-    return null; // TODO implement
   }
 
   private void override(final List<Object> originals, final List<Object> overrides) {

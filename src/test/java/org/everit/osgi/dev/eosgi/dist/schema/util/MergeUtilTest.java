@@ -38,9 +38,9 @@ public class MergeUtilTest {
 
     Map<String, String> result = MergeUtil.mergeDefaults(default1, default2);
 
-    Assert.assertEquals(3, result.size());
+    Assert.assertEquals(4, result.size());
     Assert.assertEquals("x1", result.get("k1"));
-    Assert.assertEquals(null, result.get("k2"));
+    Assert.assertEquals("", result.get("k2"));
     Assert.assertEquals("v3", result.get("k3"));
     Assert.assertEquals("v4", result.get("k4"));
   }
@@ -77,16 +77,18 @@ public class MergeUtilTest {
     default2.put("k2", "x2");
     default2.put("k3", "");
     default2.put("k6", "v6");
+    default2.put("k8", "v8");
 
     Map<String, String> override2 = new HashMap<String, String>();
     override2.put("k2", "x3");
     override2.put("k3", "x4");
     override2.put("k4", "x5");
     override2.put("k7", "v7");
+    override2.put("k8", "");
 
     Map<String, String> result = MergeUtil.mergeOverrides(override1, default2, override2);
 
-    Assert.assertEquals(5, result.size());
+    Assert.assertEquals(6, result.size());
     Assert.assertEquals(null, result.get("k1"));
     Assert.assertEquals("x3", result.get("k2"));
     Assert.assertEquals("x4", result.get("k3"));
@@ -94,6 +96,7 @@ public class MergeUtilTest {
     Assert.assertEquals("v5", result.get("k5"));
     Assert.assertEquals(null, result.get("k6"));
     Assert.assertEquals("v7", result.get("k7"));
+    Assert.assertEquals("", result.get("k8"));
   }
 
   @Test

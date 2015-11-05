@@ -17,6 +17,7 @@ package org.everit.osgi.dev.eosgi.dist.schema.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -55,40 +56,6 @@ public class DistSchemaProvider {
       throw new RuntimeException(
           "Could not create JAXB Context for distribution configuration file", e);
     }
-  }
-
-  /**
-   * Applies the ovverrides on a LaunchConfig. The overrides section is processed based on the useBy
-   * argument. This means that the invocation of {@link LaunchConfigType#getOverrides()} will return
-   * <code>null</code>.
-   */
-  public void applyOverride(
-      final LaunchConfigType launchConfig,
-      final UseByType useBy) {
-
-    LaunchConfigOverridesType launchConfigOverrides = launchConfig.getOverrides();
-    if (launchConfigOverrides == null) {
-      return;
-    }
-
-    for (LaunchConfigOverrideType launchConfigOverride : launchConfigOverrides.getOverride()) {
-      if (launchConfigOverride.getUseBy().equals(useBy)) {
-
-        launchConfig.setSystemProperties(
-            overrideSystemProperties(
-                launchConfig.getSystemProperties(), launchConfigOverride.getSystemProperties()));
-
-        launchConfig.setVmArguments(
-            overrideVmArguments(
-                launchConfig.getVmArguments(), launchConfigOverride.getVmArguments()));
-
-        launchConfig.setProgramArguments(
-            overridePropgramArguments(
-                launchConfig.getProgramArguments(), launchConfigOverride.getProgramArguments()));
-      }
-    }
-
-    launchConfig.setOverrides(null);
   }
 
   /**
@@ -157,14 +124,39 @@ public class DistSchemaProvider {
 
     DistributionPackageType distributionPackageType = readDistConfig(distFolderFile);
 
-    applyOverride(distributionPackageType.getEnvironmentConfiguration().getLaunchConfig(), useBy);
+    LaunchConfigType launchConfig =
+        distributionPackageType.getEnvironmentConfiguration().getLaunchConfig();
+
+    LaunchConfigOverridesType launchConfigOverrides = launchConfig.getOverrides();
+    if (launchConfigOverrides == null) {
+      return distributionPackageType;
+    }
+
+    for (LaunchConfigOverrideType launchConfigOverride : launchConfigOverrides.getOverride()) {
+      if (launchConfigOverride.getUseBy().equals(useBy)) {
+
+        launchConfig.setSystemProperties(
+            overrideSystemProperties(
+                launchConfig.getSystemProperties(), launchConfigOverride.getSystemProperties()));
+
+        launchConfig.setVmArguments(
+            overrideVmArguments(
+                launchConfig.getVmArguments(), launchConfigOverride.getVmArguments()));
+
+        launchConfig.setProgramArguments(
+            overridePropgramArguments(
+                launchConfig.getProgramArguments(), launchConfigOverride.getProgramArguments()));
+      }
+    }
+
+    launchConfig.setOverrides(null);
 
     return distributionPackageType;
   }
 
-  private void override(final List<Object> originals, final List<Object> overrides) {
+  private List<Object> override(final List<Object> originals, final List<Object> overrides) {
 
-    List<Object> news = new ArrayList<Object>();
+    List<Object> rvals = new ArrayList<Object>(originals);
 
     for (Object override : overrides) {
 
@@ -172,73 +164,76 @@ public class DistSchemaProvider {
       String overridingKey = overridingNode.getNodeName();
       String overridingValue = overridingNode.getTextContent();
 
+      boolean keyShouldBeDeleted = false;
       boolean overrided = false;
 
-      for (Object original : originals) {
+      for (Object rval : rvals) {
 
-        Node originalNode = (Node) original;
-        String originalKey = originalNode.getNodeName();
+        Node rvalNode = (Node) rval;
+        String rvalKey = rvalNode.getNodeName();
 
-        if (originalKey.equals(overridingKey)) {
-          originalNode.setTextContent(overridingValue);
-          overrided = true;
+        if (overridingKey.equals(rvalKey)) {
+
+          if ((overridingValue == null) || overridingValue.isEmpty()) {
+            keyShouldBeDeleted = true;
+            break;
+          } else {
+            rvalNode.setTextContent(overridingValue);
+            overrided = true;
+            break;
+          }
+
         }
+
+      }
+
+      if (keyShouldBeDeleted) {
+        removeKey(rvals, overridingKey);
       }
 
       if (!overrided) {
-        news.add(override);
+        rvals.add(overridingNode);
       }
-
     }
 
-    originals.addAll(news);
+    removeNullOrEmptyValues(rvals);
+
+    return rvals;
   }
 
   private ProgramArgumentsType overridePropgramArguments(final ProgramArgumentsType original,
       final ProgramArgumentsType override) {
 
-    ProgramArgumentsType rval = original;
-    if (rval == null) {
-      rval = new ProgramArgumentsType();
-    }
-    if (override == null) {
-      return rval;
-    }
+    List<Object> any = override(
+        original == null ? new ArrayList<Object>() : original.getAny(),
+        override == null ? new ArrayList<Object>() : override.getAny());
 
-    override(rval.getAny(), override.getAny());
-
+    ProgramArgumentsType rval = new ProgramArgumentsType();
+    rval.getAny().addAll(any);
     return rval;
   }
 
   private SystemPropertiesType overrideSystemProperties(final SystemPropertiesType original,
       final SystemPropertiesType override) {
 
-    SystemPropertiesType rval = original;
-    if (rval == null) {
-      rval = new SystemPropertiesType();
-    }
-    if (override == null) {
-      return rval;
-    }
+    List<Object> any = override(
+        original == null ? new ArrayList<Object>() : original.getAny(),
+        override == null ? new ArrayList<Object>() : override.getAny());
 
-    override(rval.getAny(), override.getAny());
-
+    SystemPropertiesType rval = new SystemPropertiesType();
+    rval.getAny().addAll(any);
     return rval;
   }
 
   private VmArgumentsType overrideVmArguments(final VmArgumentsType original,
       final VmArgumentsType override) {
 
-    VmArgumentsType rval = original;
-    if (rval == null) {
-      rval = new VmArgumentsType();
-    }
-    if (override == null) {
-      return rval;
-    }
+    List<Object> any = override(
+        original == null ? new ArrayList<Object>() : original.getAny(),
+        override == null ? new ArrayList<Object>() : override.getAny());
 
-    override(rval.getAny(), override.getAny());
-
+    VmArgumentsType rval = new VmArgumentsType();
+    rval.getAny().addAll(any);
     return rval;
   }
 
@@ -273,6 +268,37 @@ public class DistSchemaProvider {
       }
     } else {
       return null;
+    }
+  }
+
+  private void removeKey(final List<Object> rvals, final String overridingKey) {
+    Iterator<Object> rvalIterator = rvals.iterator();
+    while (rvalIterator.hasNext()) {
+
+      Object rval = rvalIterator.next();
+      Node rvalNode = (Node) rval;
+      String rvalKey = rvalNode.getNodeName();
+
+      if (rvalKey.equals(overridingKey)) {
+        rvalIterator.remove();
+        break;
+      }
+    }
+  }
+
+  private void removeNullOrEmptyValues(final List<Object> rvals) {
+
+    Iterator<Object> rvalIterator = rvals.iterator();
+    while (rvalIterator.hasNext()) {
+
+      Object rval = rvalIterator.next();
+      Node rvalNode = (Node) rval;
+      String rvalValue = rvalNode.getTextContent();
+
+      if ((rvalValue == null) || rvalValue.isEmpty()) {
+        rvalIterator.remove();
+        break;
+      }
     }
   }
 

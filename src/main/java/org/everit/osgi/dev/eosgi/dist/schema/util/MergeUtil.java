@@ -40,20 +40,8 @@ public final class MergeUtil {
       rval.putAll(default1);
     }
 
-    if ((default2 == null) || default2.isEmpty()) {
-      return rval;
-    }
-
-    for (Entry<String, String> overrideEntry : default2.entrySet()) {
-
-      String overrideKey = overrideEntry.getKey();
-      String overrideValue = overrideEntry.getValue();
-
-      if ((overrideValue == null) || overrideValue.isEmpty()) {
-        rval.remove(overrideKey);
-      } else {
-        rval.put(overrideKey, overrideValue);
-      }
+    if ((default2 != null) && !default2.isEmpty()) {
+      rval.putAll(default2);
     }
 
     return rval;

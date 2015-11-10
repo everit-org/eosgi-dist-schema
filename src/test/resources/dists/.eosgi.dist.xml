@@ -1,0 +1,1182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2011 Everit Kft. (http://www.everit.biz)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<distributionPackage environmentId="equinoxtest"
+  xmlns="http://everit.org/eosgi/dist/definition/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <artifacts>
+    <!-- Package special artifacts -->
+    <artifact targetFile="org.eclipse.osgi_3.10.100.v20150529-1857.jar">
+      <groupId>org.eclipse.tycho</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>3.10.100.v20150529-1857</version>
+    </artifact>
+    <!-- Artifacts of YAJSW -->
+    <artifact targetFolder="wrapper" targetFile="wrapper.jar">
+      <groupId>org.rzo.yajsw</groupId>
+      <artifactId>wrapper</artifactId>
+      <version>11.11</version>
+    </artifact>
+    <artifact targetFolder="wrapper" targetFile="wrapperApp.jar">
+      <groupId>org.rzo.yajsw</groupId>
+      <artifactId>wrapperApp</artifactId>
+      <version>11.11</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/commons" targetFile="commons-cli-2-SNAPSHOT.jar">
+      <groupId>org.apache.mahout.commons</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>2.0-mahout</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/commons">
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/commons">
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
+      <version>1.8</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/commons">
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.3.1</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/commons">
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.4</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/commons">
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/commons">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-vfs2</artifactId>
+      <version>2.0</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/groovy">
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>1.8.6</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/jna" targetFile="jna-3.4.1.jar">
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>3.4.0</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/jna" targetFile="platform-3.4.1.jar">
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>platform</artifactId>
+      <version>3.4.0</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/netty">
+      <groupId>io.netty</groupId>
+      <artifactId>netty</artifactId>
+      <version>3.6.6.Final</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/regex">
+      <groupId>jrexx</groupId>
+      <artifactId>jrexx</artifactId>
+      <version>1.1.1</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/core/yajsw" targetFile="ahessian.jar">
+      <groupId>org.rzo.yajsw</groupId>
+      <artifactId>ahessian</artifactId>
+      <version>11.11</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/abeille" targetFile="formsrt.jar">
+      <groupId>net.java.abeille</groupId>
+      <artifactId>abeille</artifactId>
+      <version>3.0</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/commons">
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.3</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/commons">
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.0.1</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/commons">
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+      <version>1.4.1</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/glazedlists">
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.8.2</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/glazedlists" targetFile="glazedlists-1.8.0_java15.jar">
+      <groupId>net.java.dev.glazedlists</groupId>
+      <artifactId>glazedlists_java15</artifactId>
+      <version>1.8.0</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/jgoodies">
+      <groupId>com.jgoodies</groupId>
+      <artifactId>forms</artifactId>
+      <version>1.2.0</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/quartz">
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
+      <version>1.8.0</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/velocity">
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.7</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/vfs-webdav" targetFile="jackrabbit-webdav-1.5.6.jar">
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>jackrabbit-webdav</artifactId>
+      <version>1.6.0</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/vfs-webdav">
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.5.0</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/vfs-webdav">
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>1.5.0</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/vfs-webdav" targetFile="xercesImpl.jar">
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.9.1</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/yajsw" targetFile="hessian4.jar">
+      <groupId>org.rzo.yajsw</groupId>
+      <artifactId>hessian4</artifactId>
+      <version>11.11</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/extended/yajsw" targetFile="srvmgr.jar">
+      <groupId>org.rzo.yajsw</groupId>
+      <artifactId>srvmgr</artifactId>
+      <version>11.11</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/groovy/joda">
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.6</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/groovy/mail" targetFile="mail.jar">
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.1</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/groovy/mail" targetFile="activation.jar">
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId >
+      <version>1.1.1</version>
+    </artifact>
+    <artifact targetFolder="wrapper/lib/groovy/snmp" targetFile="SNMP4J.jar">
+      <groupId>org.snmp4j</groupId>
+      <artifactId>snmp4j</artifactId>
+      <version>1.10.1</version>
+    </artifact>
+      
+    <!-- OSGi bundle artifacts -->    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.resource</groupId>
+      <artifactId>org.everit.resource.ri.ecm</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.resource.ri.ecm</symbolicName>
+        <version>1.0.1.SNAPSHOT</version>
+        <location>reference:file:lib/org.everit.resource.ri.ecm-1.0.1-SNAPSHOT.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.resource</groupId>
+      <artifactId>org.everit.resource.ri</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.resource.ri</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.resource.ri-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.resource</groupId>
+      <artifactId>org.everit.resource.api</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.resource.api</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.resource.api-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.resource</groupId>
+      <artifactId>org.everit.resource.ri.schema.qdsl</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.resource.ri.schema.qdsl</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.resource.ri.schema.qdsl-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.persistence</groupId>
+      <artifactId>org.everit.persistence.querydsl.support.api</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.persistence.querydsl.support.api</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.persistence.querydsl.support.api-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.ecm.extender.api</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.ecm.extender.api</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.osgi.ecm.extender.api-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.ecm.annotation</artifactId>
+      <version>2.1.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.ecm.annotation</symbolicName>
+        <version>2.1.0</version>
+        <location>reference:file:lib/org.everit.osgi.ecm.annotation-2.1.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.ecm.component.api</artifactId>
+      <version>2.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.ecm.component.api</symbolicName>
+        <version>2.0.0</version>
+        <location>reference:file:lib/org.everit.osgi.ecm.component.api-2.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.ecm.metadata</artifactId>
+      <version>2.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.ecm.metadata</symbolicName>
+        <version>2.0.0</version>
+        <location>reference:file:lib/org.everit.osgi.ecm.metadata-2.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.ecm.util.method</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.ecm.util.method</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.osgi.ecm.util.method-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.linkage.api</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.linkage.api</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.osgi.linkage.api-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.metatype</artifactId>
+      <version>1.3.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.osgi.service.metatype</symbolicName>
+        <version>1.3.0.201505202024</version>
+        <location>reference:file:lib/org.osgi.service.metatype-1.3.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.log</artifactId>
+      <version>1.3.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.osgi.service.log</symbolicName>
+        <version>1.3.0.201505202023</version>
+        <location>reference:file:lib/org.osgi.service.log-1.3.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi.dev</groupId>
+      <artifactId>org.everit.osgi.dev.testrunner.junit4</artifactId>
+      <version>3.0.5</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.dev.testrunner.junit4</symbolicName>
+        <version>3.0.5</version>
+        <location>reference:file:lib/org.everit.osgi.dev.testrunner.junit4-3.0.5.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.ops4j.pax.tipi</groupId>
+      <artifactId>org.ops4j.pax.tipi.junit</artifactId>
+      <version>4.11.0.1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.ops4j.pax.tipi.junit</symbolicName>
+        <version>4.11.0.1</version>
+        <location>reference:file:lib/org.ops4j.pax.tipi.junit-4.11.0.1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.ops4j.pax.tipi</groupId>
+      <artifactId>org.ops4j.pax.tipi.hamcrest.core</artifactId>
+      <version>1.3.0.1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.ops4j.pax.tipi.hamcrest.core</symbolicName>
+        <version>1.3.0.1</version>
+        <location>reference:file:lib/org.ops4j.pax.tipi.hamcrest.core-1.3.0.1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi.dev</groupId>
+      <artifactId>org.everit.osgi.dev.testrunner</artifactId>
+      <version>4.0.3</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.dev.testrunner</symbolicName>
+        <version>4.0.3</version>
+        <location>reference:file:lib/org.everit.osgi.dev.testrunner-4.0.3.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi.dev</groupId>
+      <artifactId>org.everit.osgi.dev.richconsole</artifactId>
+      <version>1.2.2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.dev.richconsole</symbolicName>
+        <version>1.2.2</version>
+        <location>reference:file:lib/org.everit.osgi.dev.richconsole-1.2.2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bndlib</artifactId>
+      <version>2.4.1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>biz.aQute.bndlib</symbolicName>
+        <version>2.4.1.201501161923</version>
+        <location>reference:file:lib/biz.aQute.bndlib-2.4.1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.metatype</artifactId>
+      <version>1.1.2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.felix.metatype</symbolicName>
+        <version>1.1.2</version>
+        <location>reference:file:lib/org.apache.felix.metatype-1.1.2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.configadmin</artifactId>
+      <version>1.8.8</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.felix.configadmin</symbolicName>
+        <version>1.8.8</version>
+        <location>reference:file:lib/org.apache.felix.configadmin-1.8.8.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.12</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>slf4j.api</symbolicName>
+        <version>1.7.12</version>
+        <location>reference:file:lib/slf4j-api-1.7.12.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.12</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>slf4j.simple</symbolicName>
+        <version>1.7.12</version>
+        <location>reference:file:lib/slf4j-simple-1.7.12.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.slf4j</groupId>
+      <artifactId>osgi-over-slf4j</artifactId>
+      <version>1.7.12</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.slf4j.osgi-over-slf4j</symbolicName>
+        <version>1.7.12</version>
+        <location>reference:file:lib/osgi-over-slf4j-1.7.12.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.loglistener.slf4j</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.loglistener.slf4j</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.osgi.loglistener.slf4j-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.aries.transaction</groupId>
+      <artifactId>org.apache.aries.transaction.manager</artifactId>
+      <version>1.1.1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.aries.transaction.manager</symbolicName>
+        <version>1.1.1</version>
+        <location>reference:file:lib/org.apache.aries.transaction.manager-1.1.1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.aries</groupId>
+      <artifactId>org.apache.aries.util</artifactId>
+      <version>1.1.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.aries.util</symbolicName>
+        <version>1.1.0</version>
+        <location>reference:file:lib/org.apache.aries.util-1.1.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi.bundles</groupId>
+      <artifactId>org.everit.osgi.bundles.javax.sql</artifactId>
+      <version>4.1.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.bundles.javax.sql</symbolicName>
+        <version>4.1.0</version>
+        <location>reference:file:lib/org.everit.osgi.bundles.javax.sql-4.1.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.jetty</groupId>
+      <artifactId>org.everit.jetty.osgi.boot</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.jetty.osgi.boot</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.jetty.osgi.boot-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>9.3.0.v20150612</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.eclipse.jetty.servlet</symbolicName>
+        <version>9.3.0.v20150612</version>
+        <location>reference:file:lib/jetty-servlet-9.3.0.v20150612.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-security</artifactId>
+      <version>9.3.0.v20150612</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.eclipse.jetty.security</symbolicName>
+        <version>9.3.0.v20150612</version>
+        <location>reference:file:lib/jetty-security-9.3.0.v20150612.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.3.0.v20150612</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.eclipse.jetty.server</symbolicName>
+        <version>9.3.0.v20150612</version>
+        <location>reference:file:lib/jetty-server-9.3.0.v20150612.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-http</artifactId>
+      <version>9.3.0.v20150612</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.eclipse.jetty.http</symbolicName>
+        <version>9.3.0.v20150612</version>
+        <location>reference:file:lib/jetty-http-9.3.0.v20150612.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>9.3.0.v20150612</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.eclipse.jetty.util</symbolicName>
+        <version>9.3.0.v20150612</version>
+        <location>reference:file:lib/jetty-util-9.3.0.v20150612.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-io</artifactId>
+      <version>9.3.0.v20150612</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.eclipse.jetty.io</symbolicName>
+        <version>9.3.0.v20150612</version>
+        <location>reference:file:lib/jetty-io-9.3.0.v20150612.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi.bundles</groupId>
+      <artifactId>org.everit.osgi.bundles.javax.servlet.api</artifactId>
+      <version>3.1.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.bundles.javax.servlet-api</symbolicName>
+        <version>3.1.0</version>
+        <location>reference:file:lib/org.everit.osgi.bundles.javax.servlet.api-3.1.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.http.proxy</artifactId>
+      <version>2.3.2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.felix.http.proxy</symbolicName>
+        <version>2.3.2</version>
+        <location>reference:file:lib/org.apache.felix.http.proxy-2.3.2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.http.bridge</artifactId>
+      <version>2.3.2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.felix.http.bridge</symbolicName>
+        <version>2.3.2</version>
+        <location>reference:file:lib/org.apache.felix.http.bridge-2.3.2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.http.api</artifactId>
+      <version>2.3.2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.felix.http.api</symbolicName>
+        <version>2.3.2</version>
+        <location>reference:file:lib/org.apache.felix.http.api-2.3.2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.http.base</artifactId>
+      <version>2.3.2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.felix.http.base</symbolicName>
+        <version>2.3.2</version>
+        <location>reference:file:lib/org.apache.felix.http.base-2.3.2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.webconsole</artifactId>
+      <version>4.2.14</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.felix.webconsole</symbolicName>
+        <version>4.2.14</version>
+        <location>reference:file:lib/org.apache.felix.webconsole-4.2.14.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.3.1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.commons.fileupload</symbolicName>
+        <version>1.3.1</version>
+        <location>reference:file:lib/commons-fileupload-1.3.1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.commons.io</symbolicName>
+        <version>2.2.0</version>
+        <location>reference:file:lib/commons-io-2.2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi.bundles</groupId>
+      <artifactId>org.everit.osgi.bundles.org.json</artifactId>
+      <version>1.0.0-v20140107</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.bundles.org.json</symbolicName>
+        <version>1.0.0.v20140107</version>
+        <location>reference:file:lib/org.everit.osgi.bundles.org.json-1.0.0-v20140107.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.4.187</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.h2</symbolicName>
+        <version>1.4.187</version>
+        <location>reference:file:lib/h2-1.4.187.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.ow2.spec.osgi</groupId>
+      <artifactId>ow2-jdbc-service-1.0-spec</artifactId>
+      <version>1.0.13</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.ow2.spec.osgi.ow2-jdbc-service-1.0-spec</symbolicName>
+        <version>1.0.13</version>
+        <location>reference:file:lib/ow2-jdbc-service-1.0-spec-1.0.13.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.persistence</groupId>
+      <artifactId>org.everit.persistence.jdbc.dsf.ecm</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.persistence.jdbc.dsf.ecm</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.persistence.jdbc.dsf.ecm-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.persistence</groupId>
+      <artifactId>org.everit.persistence.jdbc.commons.dbcp.ecm</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.persistence.jdbc.commons.dbcp.ecm</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.persistence.jdbc.commons.dbcp.ecm-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-dbcp2</artifactId>
+      <version>2.1.1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.commons.dbcp2</symbolicName>
+        <version>2.1.1</version>
+        <location>reference:file:lib/commons-dbcp2-2.1.1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-pool2</artifactId>
+      <version>2.4.2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.commons.pool2</symbolicName>
+        <version>2.4.2</version>
+        <location>reference:file:lib/commons-pool2-2.4.2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.commons.logging</symbolicName>
+        <version>1.2.0</version>
+        <location>reference:file:lib/commons-logging-1.2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.cglib</artifactId>
+      <version>3.1_1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.servicemix.bundles.cglib</symbolicName>
+        <version>3.1.0.1</version>
+        <location>reference:file:lib/org.apache.servicemix.bundles.cglib-3.1_1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.persistence</groupId>
+      <artifactId>org.everit.persistence.liquibase.datasource.ecm</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.persistence.liquibase.datasource.ecm</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.persistence.liquibase.datasource.ecm-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.persistence</groupId>
+      <artifactId>org.everit.persistence.liquibase.ecm</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.persistence.liquibase.ecm</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.persistence.liquibase.ecm-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.liquibase.bundle</artifactId>
+      <version>3.1.1-v20140507</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.liquibase.bundle</symbolicName>
+        <version>3.1.1.v20140507</version>
+        <location>reference:file:lib/org.everit.osgi.liquibase.bundle-3.1.1-v20140507.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.ow2.util.bundles</groupId>
+      <artifactId>felix-utils-1.2.0</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.ow2.util.bundles.felix-utils-1.2.0</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/felix-utils-1.2.0-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.13</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.yaml.snakeyaml</symbolicName>
+        <version>1.13.0</version>
+        <location>reference:file:lib/snakeyaml-1.13.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.persistence</groupId>
+      <artifactId>org.everit.persistence.querydsl.sqltemplates.ecm</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.persistence.querydsl.sqltemplates.ecm</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.persistence.querydsl.sqltemplates.ecm-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>com.mysema.querydsl</groupId>
+      <artifactId>querydsl-sql</artifactId>
+      <version>3.6.7</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>com.mysema.querydsl.sql</symbolicName>
+        <version>3.6.7</version>
+        <location>reference:file:lib/querydsl-sql-3.6.7.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>com.mysema.querydsl</groupId>
+      <artifactId>querydsl-core</artifactId>
+      <version>3.6.7</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>com.mysema.querydsl.core</symbolicName>
+        <version>3.6.7</version>
+        <location>reference:file:lib/querydsl-core-3.6.7.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>18.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>com.google.guava</symbolicName>
+        <version>18.0.0</version>
+        <location>reference:file:lib/guava-18.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>com.mysema.commons</groupId>
+      <artifactId>mysema-commons-lang</artifactId>
+      <version>0.2.4</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>com.mysema.commons.lang</symbolicName>
+        <version>0.2.4</version>
+        <location>reference:file:lib/mysema-commons-lang-0.2.4.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.6</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>joda-time</symbolicName>
+        <version>1.6.0</version>
+        <location>reference:file:lib/joda-time-1.6.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>1.1.0.Final</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>javax.validation.api</symbolicName>
+        <version>1.1.0.Final</version>
+        <location>reference:file:lib/validation-api-1.1.0.Final.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.persistence</groupId>
+      <artifactId>org.everit.persistence.querydsl.configuration.ecm</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.persistence.querydsl.configuration.ecm</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.persistence.querydsl.configuration.ecm-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.persistence</groupId>
+      <artifactId>org.everit.persistence.querydsl.support.ri.ecm</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.persistence.querydsl.support.ri.ecm</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.persistence.querydsl.support.ri.ecm-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.persistence</groupId>
+      <artifactId>org.everit.persistence.querydsl.support.ri</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.persistence.querydsl.support.ri</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.persistence.querydsl.support.ri-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.jsr305</artifactId>
+      <version>2.0.0_1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.servicemix.bundles.jsr305</symbolicName>
+        <version>2.0.0.1</version>
+        <location>reference:file:lib/org.apache.servicemix.bundles.jsr305-2.0.0_1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
+      <version>1_2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.apache.servicemix.bundles.javax-inject</symbolicName>
+        <version>1.0.0.2</version>
+        <location>reference:file:lib/org.apache.servicemix.bundles.javax-inject-1_2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.ecm.extender.ri</artifactId>
+      <version>2.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.ecm.extender.ri</symbolicName>
+        <version>2.0.0</version>
+        <location>reference:file:lib/org.everit.osgi.ecm.extender.ri-2.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.ecm.annotation.metadatabuilder</artifactId>
+      <version>2.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.ecm.annotation.metadatabuilder</symbolicName>
+        <version>2.0.0</version>
+        <location>reference:file:lib/org.everit.osgi.ecm.annotation.metadatabuilder-2.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.ecm.component.ri</artifactId>
+      <version>2.0.1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.ecm.component.ri</symbolicName>
+        <version>2.0.1</version>
+        <location>reference:file:lib/org.everit.osgi.ecm.component.ri-2.0.1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.capabilitycollector</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.capabilitycollector</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.osgi.capabilitycollector-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi.bundles</groupId>
+      <artifactId>org.everit.osgi.bundles.org.apache.felix.utils</artifactId>
+      <version>1.6.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.bundles.org.apache.felix.utils</symbolicName>
+        <version>1.6.0</version>
+        <location>reference:file:lib/org.everit.osgi.bundles.org.apache.felix.utils-1.6.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.ecm.component.webconsole</artifactId>
+      <version>1.1.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.ecm.component.webconsole</symbolicName>
+        <version>1.1.0</version>
+        <location>reference:file:lib/org.everit.osgi.ecm.component.webconsole-1.1.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.expression</groupId>
+      <artifactId>org.everit.expression.mvel</artifactId>
+      <version>1.0.1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.expression.mvel</symbolicName>
+        <version>1.0.1</version>
+        <location>reference:file:lib/org.everit.expression.mvel-1.0.1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.expression</groupId>
+      <artifactId>org.everit.expression.api</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.expression.api</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.expression.api-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel2</artifactId>
+      <version>2.2.3.Final</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.mvel2</symbolicName>
+        <version>2.2.3.Final</version>
+        <location>reference:file:lib/mvel2-2.2.3.Final.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.templating</groupId>
+      <artifactId>org.everit.templating.text</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.templating.text</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.templating.text-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.templating</groupId>
+      <artifactId>org.everit.templating.api</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.templating.api</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.templating.api-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.templating</groupId>
+      <artifactId>org.everit.templating.util</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.templating.util</symbolicName>
+        <version>1.0.0</version>
+        <location>reference:file:lib/org.everit.templating.util-1.0.0.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.templating</groupId>
+      <artifactId>org.everit.templating.html</artifactId>
+      <version>1.1.2</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.templating.html</symbolicName>
+        <version>1.1.2</version>
+        <location>reference:file:lib/org.everit.templating.html-1.1.2.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.osgi.bundles</groupId>
+      <artifactId>org.everit.osgi.bundles.org.htmlparser.lexer</artifactId>
+      <version>2.1</version>
+      <type>jar</type>
+      <bundle action="start">
+        <symbolicName>org.everit.osgi.bundles.org.htmlparser.lexer</symbolicName>
+        <version>2.1.0</version>
+        <location>reference:file:lib/org.everit.osgi.bundles.org.htmlparser.lexer-2.1.jar</location>
+      </bundle>
+    </artifact>    
+    <artifact targetFolder="lib">
+      <groupId>org.everit.resource</groupId>
+      <artifactId>org.everit.resource.ri.ecm.tests</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+      <type>bundle</type>
+      <bundle action="start">
+        <symbolicName>org.everit.resource.ri.ecm.tests</symbolicName>
+        <version>1.0.1.SNAPSHOT</version>
+        <location>reference:file:lib/org.everit.resource.ri.ecm.tests-1.0.1-SNAPSHOT.jar</location>
+      </bundle>
+    </artifact>
+  </artifacts>
+  <parsables>
+    <parsable path="configuration/config.ini" encoding="UTF8" />
+    <parsable path="configuration/wrapper.conf" encoding="UTF8" />
+  </parsables>
+  <environmentConfiguration>
+    <mainJar>org.eclipse.osgi_3.10.100.v20150529-1857.jar</mainJar>
+    <mainClass>org.eclipse.core.runtime.adaptor.EclipseStarter</mainClass>
+    <classPath></classPath>
+    <launchConfig>
+      <systemProperties>
+        <org.osgi.framework.system.packages>javax.crypto.spec,javax.crypto,etc</org.osgi.framework.system.packages>
+        <felix.cm.dir>../../../configadmin</felix.cm.dir>
+        <org.osgi.service.http.port>-1</org.osgi.service.http.port>
+        <org.osgi.service.http.port.secure>0</org.osgi.service.http.port.secure>
+        <mvel2.disable.jit>true</mvel2.disable.jit>
+        <eosgi.environment.id>equinoxtest</eosgi.environment.id>
+      </systemProperties>
+      <vmArguments>
+        <javaagentJacoco>-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar=append=true,dumponexit=true,includes=org.everit.osgi.resource.*,output=file,destfile=equinoxtest\jacoco.exec,sessionid=equinoxtest_1447147594596</javaagentJacoco>
+        <debug></debug>
+        <debugport></debugport>
+      </vmArguments>
+      <programArguments>
+      </programArguments>
+      <overrides>
+        <override>
+          <useBy>PARSABLES</useBy>
+          <systemProperties>
+            <org.osgi.service.http.port.secure>4848</org.osgi.service.http.port.secure>
+          </systemProperties>
+          <vmArguments>
+            <javaagentJacoco>-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar=append=true,dumponexit=true,output=file,destfile=equinoxtest\jacoco.exec,sessionid=equinoxtest_1447147594596</javaagentJacoco>
+            <debug>-Xdebug</debug>
+            <debugport>-Xrunjdwp:server=y,transport=dt_socket,address=9009,suspend=n</debugport>
+          </vmArguments>
+          <programArguments>
+            <configuration>-configuration</configuration>
+          </programArguments>
+        </override>
+        <override>
+          <useBy>IDE</useBy>
+          <systemProperties>
+            <org.osgi.service.http.port.secure>4949</org.osgi.service.http.port.secure>
+          </systemProperties>
+          <vmArguments>
+            <javaagentJacoco>-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar=append=true,dumponexit=true,output=tcpserver,destfile=equinoxtest\jacoco.exec,sessionid=equinoxtest_1447147594596</javaagentJacoco>
+            <debug></debug>
+            <debugport></debugport>
+          </vmArguments>
+          <programArguments>
+          </programArguments>
+        </override>
+      </overrides>
+    </launchConfig>
+  </environmentConfiguration>
+</distributionPackage>

@@ -116,7 +116,7 @@ public class DistSchemaProvider {
 
   /**
    * Returns the overrided distribution package read from the eosgi.dist.xml. The overrides section
-   * is processed based the given useBy argument. This means that the returned objects
+   * is processed based on the given useBy argument. This means that the returned objects
    * {@link LaunchConfigType#getOverrides()} will return <code>null</code>.
    */
   public DistributionPackageType getOverridedDistributionPackage(final File distFolderFile,
@@ -150,6 +150,10 @@ public class DistSchemaProvider {
     }
 
     launchConfig.setOverrides(null);
+
+    removeNullOrEmptyValues(launchConfig.getProgramArguments().getAny());
+    removeNullOrEmptyValues(launchConfig.getSystemProperties().getAny());
+    removeNullOrEmptyValues(launchConfig.getVmArguments().getAny());
 
     return distributionPackageType;
   }
@@ -196,8 +200,6 @@ public class DistSchemaProvider {
       }
     }
 
-    removeNullOrEmptyValues(rvals);
-
     return rvals;
   }
 
@@ -241,33 +243,34 @@ public class DistSchemaProvider {
    * Returns the original distribution package read from the eosgi.dist.xml.
    */
   public DistributionPackageType readDistConfig(final File distFolderFile) {
-    File distConfigFile = new File(distFolderFile, "/.eosgi.dist.xml");
-    if (distConfigFile.exists()) {
-      try {
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        Object distributionPackage = unmarshaller.unmarshal(distConfigFile);
-        if (distributionPackage instanceof JAXBElement) {
 
-          @SuppressWarnings("unchecked")
-          JAXBElement<DistributionPackageType> jaxbDistPack =
-              (JAXBElement<DistributionPackageType>) distributionPackage;
-          distributionPackage = jaxbDistPack.getValue();
-        }
-        if (distributionPackage instanceof DistributionPackageType) {
-          return (DistributionPackageType) distributionPackage;
-        } else {
-          throw new IllegalStateException(
-              "The root element in the provided distribution configuration file "
-                  + "is not the expected DistributionPackage element");
-        }
-      } catch (JAXBException e) {
-        throw new IllegalStateException(
-            "Failed to process already existing distribution configuration file: "
-                + distConfigFile.getAbsolutePath(),
-            e);
-      }
-    } else {
+    File distConfigFile = new File(distFolderFile, "/.eosgi.dist.xml");
+    if (!distConfigFile.exists()) {
       return null;
+    }
+
+    try {
+      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+      Object distributionPackage = unmarshaller.unmarshal(distConfigFile);
+      if (distributionPackage instanceof JAXBElement) {
+
+        @SuppressWarnings("unchecked")
+        JAXBElement<DistributionPackageType> jaxbDistPack =
+            (JAXBElement<DistributionPackageType>) distributionPackage;
+        distributionPackage = jaxbDistPack.getValue();
+      }
+      if (distributionPackage instanceof DistributionPackageType) {
+        return (DistributionPackageType) distributionPackage;
+      } else {
+        throw new IllegalStateException(
+            "The root element in the provided distribution configuration file "
+                + "is not the expected DistributionPackage element");
+      }
+    } catch (JAXBException e) {
+      throw new IllegalStateException(
+          "Failed to process already existing distribution configuration file: "
+              + distConfigFile.getAbsolutePath(),
+          e);
     }
   }
 
@@ -281,7 +284,6 @@ public class DistSchemaProvider {
 
       if (rvalKey.equals(overridingKey)) {
         rvalIterator.remove();
-        break;
       }
     }
   }
@@ -297,7 +299,6 @@ public class DistSchemaProvider {
 
       if ((rvalValue == null) || rvalValue.isEmpty()) {
         rvalIterator.remove();
-        break;
       }
     }
   }

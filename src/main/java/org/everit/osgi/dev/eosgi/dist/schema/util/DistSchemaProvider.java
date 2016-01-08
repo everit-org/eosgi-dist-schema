@@ -61,14 +61,15 @@ public class DistSchemaProvider {
   /**
    * Returns the {@link EnvironmentConfigurationDTO} for the specified usage.
    */
-  public EnvironmentConfigurationDTO getEnvironmentConfiguration(final File distFolderFile,
-      final UseByType useBy) {
+  public EnvironmentConfigurationDTO getEnvironmentConfiguration(
+      final DistributionPackageType overridedDistributionPackage) {
 
-    DistributionPackageType distributionPackage =
-        getOverridedDistributionPackage(distFolderFile, useBy);
+    if (overridedDistributionPackage == null) {
+      return null;
+    }
 
     EnvironmentConfigurationType environmentConfiguration =
-        distributionPackage.getEnvironmentConfiguration();
+        overridedDistributionPackage.getEnvironmentConfiguration();
 
     String mainJar = environmentConfiguration.getMainJar();
     String mainClass = environmentConfiguration.getMainClass();
@@ -123,6 +124,10 @@ public class DistSchemaProvider {
       final UseByType useBy) {
 
     DistributionPackageType distributionPackageType = readDistConfig(distFolderFile);
+
+    if (distributionPackageType == null) {
+      return null;
+    }
 
     LaunchConfigType launchConfig =
         distributionPackageType.getEnvironmentConfiguration().getLaunchConfig();
@@ -242,7 +247,7 @@ public class DistSchemaProvider {
   /**
    * Returns the original distribution package read from the eosgi.dist.xml.
    */
-  public DistributionPackageType readDistConfig(final File distFolderFile) {
+  private DistributionPackageType readDistConfig(final File distFolderFile) {
 
     File distConfigFile = new File(distFolderFile, "/.eosgi.dist.xml");
     if (!distConfigFile.exists()) {

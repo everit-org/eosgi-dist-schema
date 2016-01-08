@@ -50,4 +50,66 @@ public class EnvironmentConfigurationDTO {
     this.programArguments = Collections.unmodifiableList(programArguments);
   }
 
+  /**
+   * Checks if this (the new) configuration is changed compared to the existing. The jacoco
+   * configuration is ignored.
+   */
+  public boolean isChanged(
+      final EnvironmentConfigurationDTO existingConfig) {
+
+    if (existingConfig == null) {
+      return false;
+    }
+
+    if (isClasspathChanged(existingConfig)
+        || isMainClassChanged(existingConfig)
+        || isMainJarChanged(existingConfig)
+        || isPorgramArgumentsChanged(existingConfig)
+        || isSystemPropertiesChanged(existingConfig)
+        || isVmArgumentsChanged(existingConfig)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private boolean isClasspathChanged(final EnvironmentConfigurationDTO existingConfig) {
+    return !existingConfig.classpath.equals(classpath);
+  }
+
+  private boolean isMainClassChanged(final EnvironmentConfigurationDTO existingConfig) {
+    return !existingConfig.mainClass.equals(mainClass);
+  }
+
+  private boolean isMainJarChanged(final EnvironmentConfigurationDTO existingConfig) {
+    return !existingConfig.mainJar.equals(mainJar);
+  }
+
+  private boolean isPorgramArgumentsChanged(final EnvironmentConfigurationDTO existingConfig) {
+    return !existingConfig.programArguments.equals(programArguments);
+  }
+
+  private boolean isSystemPropertiesChanged(final EnvironmentConfigurationDTO existingConfig) {
+    return !existingConfig.systemProperties.equals(systemProperties);
+  }
+
+  private boolean isVmArgumentsChanged(final EnvironmentConfigurationDTO existingConfig) {
+
+    if (existingConfig.vmArguments.size() != vmArguments.size()) {
+      return true;
+    }
+
+    for (int i = 0; i < existingConfig.vmArguments.size(); i++) {
+      String existingVmArg = existingConfig.vmArguments.get(i);
+      String newVmArg = vmArguments.get(i);
+      if (!existingVmArg.equals(newVmArg)
+          && !existingVmArg.contains("jacoco")
+          && !newVmArg.contains("jacoco")) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
 }

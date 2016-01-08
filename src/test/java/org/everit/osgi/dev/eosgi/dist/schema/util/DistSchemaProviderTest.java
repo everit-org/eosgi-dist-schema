@@ -286,16 +286,28 @@ public class DistSchemaProviderTest {
   @Test
   public void testGetEnvironmentConfiguration() throws URISyntaxException {
 
+    File distFolderFile = getDistFolderFile();
+
+    DistributionPackageType ideDistributionPackage =
+        distSchemaProvider.getOverridedDistributionPackage(distFolderFile, UseByType.IDE);
+
     EnvironmentConfigurationDTO ideConf = distSchemaProvider
-        .getEnvironmentConfiguration(getDistFolderFile(), UseByType.IDE);
+        .getEnvironmentConfiguration(ideDistributionPackage);
     Assert.assertNotNull(ideConf);
 
+    DistributionPackageType integrationTestDistributionPackage =
+        distSchemaProvider.getOverridedDistributionPackage(distFolderFile,
+            UseByType.INTEGRATION_TEST);
+
     EnvironmentConfigurationDTO testConf = distSchemaProvider
-        .getEnvironmentConfiguration(getDistFolderFile(), UseByType.INTEGRATION_TEST);
+        .getEnvironmentConfiguration(integrationTestDistributionPackage);
     Assert.assertNotNull(testConf);
 
+    DistributionPackageType parsablesDistributionPackage =
+        distSchemaProvider.getOverridedDistributionPackage(distFolderFile, UseByType.PARSABLES);
+
     EnvironmentConfigurationDTO parsablesConf = distSchemaProvider
-        .getEnvironmentConfiguration(getDistFolderFile(), UseByType.PARSABLES);
+        .getEnvironmentConfiguration(parsablesDistributionPackage);
     Assert.assertNotNull(parsablesConf);
 
     assertSameInformation(ideConf, testConf, parsablesConf);
@@ -370,18 +382,20 @@ public class DistSchemaProviderTest {
   @Test
   public void testGetOverridedDistributionPackage() throws URISyntaxException {
 
+    File distFolderFile = getDistFolderFile();
+
     DistributionPackageType distIde = distSchemaProvider
-        .getOverridedDistributionPackage(getDistFolderFile(), UseByType.IDE);
+        .getOverridedDistributionPackage(distFolderFile, UseByType.IDE);
 
     Assert.assertNotNull(distIde);
 
     DistributionPackageType distTest = distSchemaProvider
-        .getOverridedDistributionPackage(getDistFolderFile(), UseByType.INTEGRATION_TEST);
+        .getOverridedDistributionPackage(distFolderFile, UseByType.INTEGRATION_TEST);
 
     Assert.assertNotNull(distTest);
 
     DistributionPackageType distParsables = distSchemaProvider
-        .getOverridedDistributionPackage(getDistFolderFile(), UseByType.PARSABLES);
+        .getOverridedDistributionPackage(distFolderFile, UseByType.PARSABLES);
 
     Assert.assertNotNull(distParsables);
 

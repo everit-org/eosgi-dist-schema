@@ -49,9 +49,9 @@ public class DistSchemaProvider {
    */
   public DistSchemaProvider() {
     try {
-      jaxbContext =
-          JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(),
-              ObjectFactory.class.getClassLoader());
+      jaxbContext = JAXBContext.newInstance(
+          ObjectFactory.class.getPackage().getName(),
+          ObjectFactory.class.getClassLoader());
     } catch (JAXBException e) {
       throw new RuntimeException(
           "Could not create JAXB Context for distribution configuration file", e);

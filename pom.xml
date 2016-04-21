@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.everit.config</groupId>
     <artifactId>org.everit.config.oss</artifactId>
-    <version>7.2.0</version>
+    <version>7.3.0</version>
   </parent>
 
   <groupId>org.everit.osgi.dev</groupId>
@@ -32,6 +32,9 @@
   <version>1.0.0-SNAPSHOT</version>
 
   <packaging>bundle</packaging>
+
+  <name>Everit - eosgi distribution schema</name>
+  <description>The schema used by the eosgi-maven-plugin to create eosgi distribution packages.</description> 
 
   <properties>
     <projectpath>eosgi-dist-schema</projectpath>
@@ -84,8 +87,8 @@
               *
             </Import-Package>
             <Export-Package>
-              org.everit.osgi.dev.eosgi.dist.schema,
-              org.everit.osgi.dev.eosgi.dist.schema.util
+              org.everit.osgi.dev.eosgi.dist.schema.util,
+              org.everit.osgi.dev.eosgi.dist.schema.xsd
             </Export-Package>
           </instructions>
         </configuration>

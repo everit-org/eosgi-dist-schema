@@ -1,4 +1,4 @@
 # eosgi-dist-schema
 
-Schema used in eosgi distribution packages.
+The schema used by the eosgi-maven-plugin to create eosgi distribution packages.
 

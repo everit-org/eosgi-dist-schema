@@ -59,7 +59,11 @@ public class DistSchemaProvider {
   }
 
   /**
-   * Returns the {@link EnvironmentConfigurationDTO} for the specified usage.
+   * Returns the {@link EnvironmentConfigurationDTO}.
+   *
+   * @param overridedDistributionPackage
+   *          the distribution package used to create the environment configuration
+   * @return the environment configuration
    */
   public EnvironmentConfigurationDTO getEnvironmentConfiguration(
       final DistributionPackageType overridedDistributionPackage) {
@@ -119,6 +123,12 @@ public class DistSchemaProvider {
    * Returns the overrided distribution package read from the eosgi.dist.xml. The overrides section
    * is processed based on the given useBy argument. This means that the returned objects
    * {@link LaunchConfigType#getOverrides()} will return <code>null</code>.
+   *
+   * @param distFolderFile
+   *          the file of the eosgi.dist.xml
+   * @param useBy
+   *          the type of the usage
+   * @return the distribution package
    */
   public DistributionPackageType getOverridedDistributionPackage(final File distFolderFile,
       final UseByType useBy) {

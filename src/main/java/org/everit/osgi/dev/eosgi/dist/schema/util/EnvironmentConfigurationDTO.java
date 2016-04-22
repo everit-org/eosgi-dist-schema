@@ -37,6 +37,19 @@ public class EnvironmentConfigurationDTO {
 
   /**
    * Constructor.
+   *
+   * @param mainJar
+   *          the path of the main jar file to start
+   * @param mainClass
+   *          the fully qualified name of the main class to start
+   * @param classpath
+   *          the classpath required to start the environment
+   * @param systemProperties
+   *          the system properties used to start the environment
+   * @param vmArguments
+   *          the VM arguments used to start the environment
+   * @param programArguments
+   *          the program arguments used to start environment
    */
   public EnvironmentConfigurationDTO(final String mainJar, final String mainClass,
       final String classpath, final List<String> systemProperties, final List<String> vmArguments,
@@ -53,6 +66,10 @@ public class EnvironmentConfigurationDTO {
   /**
    * Checks if this (the new) configuration is changed compared to the existing. The jacoco
    * configuration is ignored.
+   *
+   * @param existingConfig
+   *          the existing configuration checked against this configrutaion
+   * @return <code>true</code> if the configuration is changed, otherwise <code>false</code>
    */
   public boolean isChanged(
       final EnvironmentConfigurationDTO existingConfig) {

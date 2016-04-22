@@ -27,6 +27,10 @@ public final class MergeUtil {
   /**
    * Merges two default maps.
    *
+   * @param default1
+   *          map one
+   * @param default2
+   *          map two
    * @return The returned new map will contain the union of the two maps except the keys where the
    *         values of the second map is <code>null</code> or an empty String.
    */
@@ -49,6 +53,13 @@ public final class MergeUtil {
 
   /**
    * Merges two override map with a default map.
+   *
+   * @param override1
+   *          overriding map one
+   * @param default2
+   *          default values map
+   * @param override2
+   *          overriging map two
    *
    * @return The returned new map will be a merge ({@link #mergeDefaults(Map, Map)}) of the third
    *         map and with a map of keys from the first map except the keys where the values of the

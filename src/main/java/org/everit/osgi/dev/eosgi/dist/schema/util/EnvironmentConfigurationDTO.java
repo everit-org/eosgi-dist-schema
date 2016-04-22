@@ -27,8 +27,6 @@ public class EnvironmentConfigurationDTO {
 
   public final String mainClass;
 
-  public final String mainJar;
-
   public final List<String> programArguments;
 
   public final List<String> systemProperties;
@@ -38,8 +36,6 @@ public class EnvironmentConfigurationDTO {
   /**
    * Constructor.
    *
-   * @param mainJar
-   *          the path of the main jar file to start
    * @param mainClass
    *          the fully qualified name of the main class to start
    * @param classpath
@@ -51,11 +47,10 @@ public class EnvironmentConfigurationDTO {
    * @param programArguments
    *          the program arguments used to start environment
    */
-  public EnvironmentConfigurationDTO(final String mainJar, final String mainClass,
+  public EnvironmentConfigurationDTO(final String mainClass,
       final String classpath, final List<String> systemProperties, final List<String> vmArguments,
       final List<String> programArguments) {
     super();
-    this.mainJar = mainJar;
     this.mainClass = mainClass;
     this.classpath = classpath;
     this.systemProperties = Collections.unmodifiableList(systemProperties);
@@ -80,7 +75,6 @@ public class EnvironmentConfigurationDTO {
 
     if (isClasspathChanged(existingConfig)
         || isMainClassChanged(existingConfig)
-        || isMainJarChanged(existingConfig)
         || isPorgramArgumentsChanged(existingConfig)
         || isSystemPropertiesChanged(existingConfig)
         || isVmArgumentsChanged(existingConfig)) {
@@ -96,10 +90,6 @@ public class EnvironmentConfigurationDTO {
 
   private boolean isMainClassChanged(final EnvironmentConfigurationDTO existingConfig) {
     return !existingConfig.mainClass.equals(mainClass);
-  }
-
-  private boolean isMainJarChanged(final EnvironmentConfigurationDTO existingConfig) {
-    return !existingConfig.mainJar.equals(mainJar);
   }
 
   private boolean isPorgramArgumentsChanged(final EnvironmentConfigurationDTO existingConfig) {

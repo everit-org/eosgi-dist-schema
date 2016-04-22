@@ -75,7 +75,6 @@ public class DistSchemaProvider {
     EnvironmentConfigurationType environmentConfiguration =
         overridedDistributionPackage.getEnvironmentConfiguration();
 
-    String mainJar = environmentConfiguration.getMainJar();
     String mainClass = environmentConfiguration.getMainClass();
     String classpath = environmentConfiguration.getClassPath();
 
@@ -116,7 +115,7 @@ public class DistSchemaProvider {
     }
 
     return new EnvironmentConfigurationDTO(
-        mainJar, mainClass, classpath, systemProperties, vmArguments, programArguments);
+        mainClass, classpath, systemProperties, vmArguments, programArguments);
   }
 
   /**

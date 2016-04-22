@@ -235,11 +235,6 @@ public class DistSchemaProviderTest {
         distTest.getEnvironmentConfiguration().getMainClass(),
         distParsables.getEnvironmentConfiguration().getMainClass());
 
-    assertEquals(distIde.getEnvironmentConfiguration().getMainJar(),
-        distIde.getEnvironmentConfiguration().getMainJar(),
-        distTest.getEnvironmentConfiguration().getMainJar(),
-        distParsables.getEnvironmentConfiguration().getMainJar());
-
   }
 
   private void assertSameInformation(final EnvironmentConfigurationDTO ideConf,
@@ -255,10 +250,6 @@ public class DistSchemaProviderTest {
         testConf.mainClass,
         parsablesConf.mainClass);
 
-    assertEquals(ideConf.mainJar,
-        ideConf.mainJar,
-        testConf.mainJar,
-        parsablesConf.mainJar);
   }
 
   private Map<String, String> convertKeyValuesPairsToMap(final String... keyValuePairs) {

@@ -34,7 +34,7 @@
   <packaging>bundle</packaging>
 
   <name>Everit - eosgi distribution schema</name>
-  <description>The schema used by the eosgi-maven-plugin to create eosgi distribution packages.</description> 
+  <description>The schema used by the eosgi-maven-plugin to create eosgi distribution packages.</description>
 
   <properties>
     <projectpath>eosgi-dist-schema</projectpath>
@@ -115,6 +115,13 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <excludes>org/everit/osgi/dev/eosgi/dist/schema/xsd/*</excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <additionalparam>-Xdoclint:none</additionalparam>
         </configuration>
       </plugin>
     </plugins>

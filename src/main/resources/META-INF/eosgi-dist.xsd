@@ -47,12 +47,19 @@
           </documentation>
         </annotation>
       </element>
-      <element name="environmentConfiguration" type="tns:EnvironmentConfigurationType" maxOccurs="1" minOccurs="1"></element>
       <element name="parsables" type="tns:ParsablesType" maxOccurs="1" minOccurs="0"></element>
+            <element name="runtimePaths" type="tns:RuntimePathsType" minOccurs="0" maxOccurs="1"></element>
+            <element name="launchConfig" type="tns:LaunchConfigType" minOccurs="0" maxOccurs="1"></element>
     </sequence>
     <attribute name="environmentId" type="string" use="required"></attribute>
-    <attribute name="frameworkStartLevel" type="int" use="optional"></attribute>
-    <attribute name="bundleStartLevel" type="int" use="optional"></attribute>
+    <attribute name="frameworkStartLevel" type="int" use="optional">
+      <annotation>
+        <documentation>The start level of the OSGi framework.</documentation>
+      </annotation></attribute>
+    <attribute name="bundleStartLevel" type="int" use="optional">
+      <annotation>
+        <documentation>Start level that is automatically assigned to a bundle that is installed into the OSGi container.</documentation>
+      </annotation></attribute>
   </complexType>
 
   <complexType name="ArtifactType">
@@ -166,13 +173,6 @@
     </restriction>
   </simpleType>
 
-  <complexType name="EnvironmentConfigurationType">
-    <sequence>
-      <element name="mainClass" type="string" minOccurs="0" maxOccurs="1"></element>
-      <element name="classPath" type="string" maxOccurs="1" minOccurs="0"></element>
-      <element name="launchConfig" type="tns:LaunchConfigType" maxOccurs="1" minOccurs="0"></element>
-    </sequence>
-  </complexType>
 
   <complexType name="SystemPropertiesType">
     <sequence>
@@ -212,8 +212,12 @@
     <complexContent>
       <extension base="tns:AbstractLaunchConfigType">
         <sequence>
-          <element name="overrides" type="tns:LaunchConfigOverridesType" maxOccurs="1" minOccurs="0"></element>
+          <element name="overrides" type="tns:LaunchConfigOverridesType" maxOccurs="1"
+            minOccurs="0">
+          </element>
         </sequence>
+        <attribute name="mainClass" type="string" use="required"></attribute>
+        <attribute name="classPath" type="string" use="optional"></attribute>
       </extension>
     </complexContent>
   </complexType>
@@ -240,4 +244,10 @@
     </sequence>
   </complexType>
 
+
+  <complexType name="RuntimePathsType">
+    <sequence>
+      <element name="pathRegex" type="string" minOccurs="0" maxOccurs="unbounded"></element>
+    </sequence>
+  </complexType>
 </schema>

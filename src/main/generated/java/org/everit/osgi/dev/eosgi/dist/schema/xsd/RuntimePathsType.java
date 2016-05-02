@@ -27,21 +27,20 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ArtifactsType complex type.
+ * <p>Java class for RuntimePathsType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ArtifactsType">
+ * &lt;complexType name="RuntimePathsType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="artifact" type="{http://everit.org/eosgi/dist/definition/4.0.0}ArtifactType" maxOccurs="unbounded"/>
+ *         &lt;element name="pathRegex" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -51,41 +50,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArtifactsType", propOrder = {
-    "artifact"
+@XmlType(name = "RuntimePathsType", propOrder = {
+    "pathRegex"
 })
-public class ArtifactsType {
+public class RuntimePathsType {
 
-    @XmlElement(required = true)
-    protected List<ArtifactType> artifact;
+    protected List<String> pathRegex;
 
     /**
-     * Gets the value of the artifact property.
+     * Gets the value of the pathRegex property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the artifact property.
+     * This is why there is not a <CODE>set</CODE> method for the pathRegex property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getArtifact().add(newItem);
+     *    getPathRegex().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ArtifactType }
+     * {@link String }
      * 
      * 
      */
-    public List<ArtifactType> getArtifact() {
-        if (artifact == null) {
-            artifact = new ArrayList<ArtifactType>();
+    public List<String> getPathRegex() {
+        if (pathRegex == null) {
+            pathRegex = new ArrayList<String>();
         }
-        return this.artifact;
+        return this.pathRegex;
     }
 
 }

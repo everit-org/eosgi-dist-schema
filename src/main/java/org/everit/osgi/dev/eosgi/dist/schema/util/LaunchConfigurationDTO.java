@@ -19,9 +19,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The unmodifiable arguments that can be used to execute an environment.
+ * The unmodifiable arguments that can be used to launch an environment.
  */
-public class EnvironmentConfigurationDTO {
+public class LaunchConfigurationDTO {
 
   public final String classpath;
 
@@ -47,7 +47,7 @@ public class EnvironmentConfigurationDTO {
    * @param programArguments
    *          the program arguments used to start environment
    */
-  public EnvironmentConfigurationDTO(final String mainClass,
+  public LaunchConfigurationDTO(final String mainClass,
       final String classpath, final List<String> systemProperties, final List<String> vmArguments,
       final List<String> programArguments) {
     super();
@@ -67,7 +67,7 @@ public class EnvironmentConfigurationDTO {
    * @return <code>true</code> if the configuration is changed, otherwise <code>false</code>
    */
   public boolean isChanged(
-      final EnvironmentConfigurationDTO existingConfig) {
+      final LaunchConfigurationDTO existingConfig) {
 
     if (existingConfig == null) {
       return false;
@@ -84,23 +84,23 @@ public class EnvironmentConfigurationDTO {
     return false;
   }
 
-  private boolean isClasspathChanged(final EnvironmentConfigurationDTO existingConfig) {
+  private boolean isClasspathChanged(final LaunchConfigurationDTO existingConfig) {
     return !existingConfig.classpath.equals(classpath);
   }
 
-  private boolean isMainClassChanged(final EnvironmentConfigurationDTO existingConfig) {
+  private boolean isMainClassChanged(final LaunchConfigurationDTO existingConfig) {
     return !existingConfig.mainClass.equals(mainClass);
   }
 
-  private boolean isPorgramArgumentsChanged(final EnvironmentConfigurationDTO existingConfig) {
+  private boolean isPorgramArgumentsChanged(final LaunchConfigurationDTO existingConfig) {
     return !existingConfig.programArguments.equals(programArguments);
   }
 
-  private boolean isSystemPropertiesChanged(final EnvironmentConfigurationDTO existingConfig) {
+  private boolean isSystemPropertiesChanged(final LaunchConfigurationDTO existingConfig) {
     return !existingConfig.systemProperties.equals(systemProperties);
   }
 
-  private boolean isVmArgumentsChanged(final EnvironmentConfigurationDTO existingConfig) {
+  private boolean isVmArgumentsChanged(final LaunchConfigurationDTO existingConfig) {
 
     if (existingConfig.vmArguments.size() != vmArguments.size()) {
       return true;

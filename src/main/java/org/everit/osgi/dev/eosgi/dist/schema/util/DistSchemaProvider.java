@@ -26,7 +26,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.DistributionPackageType;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.EnvironmentConfigurationType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigOverrideType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigOverridesType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigType;
@@ -59,26 +58,23 @@ public class DistSchemaProvider {
   }
 
   /**
-   * Returns the {@link EnvironmentConfigurationDTO}.
+   * Returns the {@link LaunchConfigurationDTO}.
    *
-   * @param overridedDistributionPackage
+   * @param overriddenDistributionPackage
    *          the distribution package used to create the environment configuration
    * @return the environment configuration
    */
-  public EnvironmentConfigurationDTO getEnvironmentConfiguration(
-      final DistributionPackageType overridedDistributionPackage) {
+  public LaunchConfigurationDTO getLaunchConfiguration(
+      final DistributionPackageType overriddenDistributionPackage) {
 
-    if (overridedDistributionPackage == null) {
+    if (overriddenDistributionPackage == null) {
       return null;
     }
 
-    EnvironmentConfigurationType environmentConfiguration =
-        overridedDistributionPackage.getEnvironmentConfiguration();
+    LaunchConfigType launchConfig = overriddenDistributionPackage.getLaunchConfig();
 
-    String mainClass = environmentConfiguration.getMainClass();
-    String classpath = environmentConfiguration.getClassPath();
-
-    LaunchConfigType launchConfig = environmentConfiguration.getLaunchConfig();
+    String mainClass = launchConfig.getMainClass();
+    String classpath = launchConfig.getClassPath();
 
     List<String> systemProperties = new ArrayList<String>();
     SystemPropertiesType systemPropertiesType = launchConfig.getSystemProperties();
@@ -114,7 +110,7 @@ public class DistSchemaProvider {
       }
     }
 
-    return new EnvironmentConfigurationDTO(
+    return new LaunchConfigurationDTO(
         mainClass, classpath, systemProperties, vmArguments, programArguments);
   }
 
@@ -129,7 +125,7 @@ public class DistSchemaProvider {
    *          the type of the usage
    * @return the distribution package
    */
-  public DistributionPackageType getOverridedDistributionPackage(final File distFolderFile,
+  public DistributionPackageType getOverriddenDistributionPackage(final File distFolderFile,
       final UseByType useBy) {
 
     DistributionPackageType distributionPackageType = readDistConfig(distFolderFile);
@@ -138,8 +134,7 @@ public class DistSchemaProvider {
       return null;
     }
 
-    LaunchConfigType launchConfig =
-        distributionPackageType.getEnvironmentConfiguration().getLaunchConfig();
+    LaunchConfigType launchConfig = distributionPackageType.getLaunchConfig();
 
     LaunchConfigOverridesType launchConfigOverrides = launchConfig.getOverrides();
     if (launchConfigOverrides == null) {

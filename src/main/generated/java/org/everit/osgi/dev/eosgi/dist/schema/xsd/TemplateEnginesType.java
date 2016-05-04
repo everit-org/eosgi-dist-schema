@@ -28,34 +28,32 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for UseByType.
+ * <p>Java class for TemplateEnginesType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="UseByType">
+ * &lt;simpleType name="TemplateEnginesType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="INTEGRATION_TEST"/>
- *     &lt;enumeration value="PARSABLES"/>
- *     &lt;enumeration value="IDE"/>
+ *     &lt;enumeration value="TEXT"/>
+ *     &lt;enumeration value="XML"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
  * 
  */
-@XmlType(name = "UseByType")
+@XmlType(name = "TemplateEnginesType")
 @XmlEnum
-public enum UseByType {
+public enum TemplateEnginesType {
 
-    INTEGRATION_TEST,
-    PARSABLES,
-    IDE;
+    TEXT,
+    XML;
 
     public String value() {
         return name();
     }
 
-    public static UseByType fromValue(String v) {
+    public static TemplateEnginesType fromValue(String v) {
         return valueOf(v);
     }
 

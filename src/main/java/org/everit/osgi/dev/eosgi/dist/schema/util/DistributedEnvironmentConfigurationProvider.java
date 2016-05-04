@@ -25,16 +25,14 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.ArgumentsType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.EntryType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.EnvironmentType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigOverrideType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigOverridesType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ObjectFactory;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.ProgramArgumentsType;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.SystemPropertiesType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.UseByType;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.VmArgumentsType;
-import org.w3c.dom.Node;
 
 /**
  * Provider of the configuration of an environment.
@@ -76,42 +74,27 @@ public class DistributedEnvironmentConfigurationProvider {
     String mainClass = launchConfig.getMainClass();
     String classpath = launchConfig.getClassPath();
 
-    List<String> systemProperties = new ArrayList<String>();
-    SystemPropertiesType systemPropertiesType = launchConfig.getSystemProperties();
-    if (systemPropertiesType != null) {
-      List<Object> systemPropertyNodes = systemPropertiesType.getAny();
-      for (Object systemPropertyNode : systemPropertyNodes) {
-        Node node = (Node) systemPropertyNode;
-        String systemPropertyKey = node.getNodeName();
-        String systemPropertyValue = node.getTextContent();
-        systemProperties.add("-D" + systemPropertyKey + "=" + systemPropertyValue);
-      }
-    }
-
     List<String> vmArguments = new ArrayList<String>();
-    VmArgumentsType vmArgumentsType = launchConfig.getVmArguments();
+    ArgumentsType vmArgumentsType = launchConfig.getVmArguments();
     if (vmArgumentsType != null) {
-      List<Object> vmArgumentNodes = vmArgumentsType.getAny();
-      for (Object vmArgumentNode : vmArgumentNodes) {
-        Node node = (Node) vmArgumentNode;
-        String vmArgumentValue = node.getTextContent();
+      List<EntryType> vmArgumentNodes = vmArgumentsType.getArgument();
+      for (EntryType vmArgumentNode : vmArgumentNodes) {
+        String vmArgumentValue = vmArgumentNode.getValue();
         vmArguments.add(vmArgumentValue);
       }
     }
 
     List<String> programArguments = new ArrayList<String>();
-    ProgramArgumentsType programArgumentsType = launchConfig.getProgramArguments();
+    ArgumentsType programArgumentsType = launchConfig.getProgramArguments();
     if (programArgumentsType != null) {
-      List<Object> programArgumentNodes = programArgumentsType.getAny();
-      for (Object programArgumentNode : programArgumentNodes) {
-        Node node = (Node) programArgumentNode;
-        String programArgumentValue = node.getTextContent();
+      List<EntryType> programArgumentNodes = programArgumentsType.getArgument();
+      for (EntryType programArgument : programArgumentNodes) {
+        String programArgumentValue = programArgument.getValue();
         programArguments.add(programArgumentValue);
       }
     }
 
-    return new LaunchConfigurationDTO(
-        mainClass, classpath, systemProperties, vmArguments, programArguments);
+    return new LaunchConfigurationDTO(mainClass, classpath, vmArguments, programArguments);
   }
 
   /**
@@ -144,10 +127,6 @@ public class DistributedEnvironmentConfigurationProvider {
     for (LaunchConfigOverrideType launchConfigOverride : launchConfigOverrides.getOverride()) {
       if (launchConfigOverride.getUseBy().equals(useBy)) {
 
-        launchConfig.setSystemProperties(
-            overrideSystemProperties(
-                launchConfig.getSystemProperties(), launchConfigOverride.getSystemProperties()));
-
         launchConfig.setVmArguments(
             overrideVmArguments(
                 launchConfig.getVmArguments(), launchConfigOverride.getVmArguments()));
@@ -160,39 +139,36 @@ public class DistributedEnvironmentConfigurationProvider {
 
     launchConfig.setOverrides(null);
 
-    removeNullOrEmptyValues(launchConfig.getProgramArguments().getAny());
-    removeNullOrEmptyValues(launchConfig.getSystemProperties().getAny());
-    removeNullOrEmptyValues(launchConfig.getVmArguments().getAny());
+    removeNullOrEmptyValues(launchConfig.getProgramArguments().getArgument());
+    removeNullOrEmptyValues(launchConfig.getVmArguments().getArgument());
 
     return distributionPackageType;
   }
 
-  private List<Object> override(final List<Object> originals, final List<Object> overrides) {
+  private List<EntryType> override(final List<EntryType> originals,
+      final List<EntryType> overrides) {
 
-    List<Object> rvals = new ArrayList<Object>(originals);
+    List<EntryType> rvals = new ArrayList<>(originals);
 
-    for (Object override : overrides) {
+    for (EntryType override : overrides) {
 
-      Node overridingNode = (Node) override;
-      String overridingKey = overridingNode.getNodeName();
-      String overridingValue = overridingNode.getTextContent();
+      String overridingKey = override.getKey();
+      String overridingValue = override.getValue();
 
       boolean keyShouldBeDeleted = false;
-      boolean overrided = false;
+      boolean overridden = false;
 
-      for (Object rval : rvals) {
-
-        Node rvalNode = (Node) rval;
-        String rvalKey = rvalNode.getNodeName();
+      for (EntryType rval : rvals) {
+        String rvalKey = rval.getKey();
 
         if (overridingKey.equals(rvalKey)) {
 
-          if ((overridingValue == null) || overridingValue.isEmpty()) {
+          if (overridingValue == null) {
             keyShouldBeDeleted = true;
             break;
           } else {
-            rvalNode.setTextContent(overridingValue);
-            overrided = true;
+            rval.setValue(overridingValue);
+            overridden = true;
             break;
           }
 
@@ -204,47 +180,35 @@ public class DistributedEnvironmentConfigurationProvider {
         removeKey(rvals, overridingKey);
       }
 
-      if (!overrided) {
-        rvals.add(overridingNode);
+      if (!overridden) {
+        rvals.add(override);
       }
     }
 
     return rvals;
   }
 
-  private ProgramArgumentsType overridePropgramArguments(final ProgramArgumentsType original,
-      final ProgramArgumentsType override) {
+  private ArgumentsType overridePropgramArguments(final ArgumentsType original,
+      final ArgumentsType override) {
 
-    List<Object> any = override(
-        original == null ? new ArrayList<Object>() : original.getAny(),
-        override == null ? new ArrayList<Object>() : override.getAny());
+    List<EntryType> any = override(
+        original == null ? new ArrayList<EntryType>() : original.getArgument(),
+        override == null ? new ArrayList<EntryType>() : override.getArgument());
 
-    ProgramArgumentsType rval = new ProgramArgumentsType();
-    rval.getAny().addAll(any);
+    ArgumentsType rval = new ArgumentsType();
+    rval.getArgument().addAll(any);
     return rval;
   }
 
-  private SystemPropertiesType overrideSystemProperties(final SystemPropertiesType original,
-      final SystemPropertiesType override) {
+  private ArgumentsType overrideVmArguments(final ArgumentsType original,
+      final ArgumentsType override) {
 
-    List<Object> any = override(
-        original == null ? new ArrayList<Object>() : original.getAny(),
-        override == null ? new ArrayList<Object>() : override.getAny());
+    List<EntryType> any = override(
+        original == null ? new ArrayList<EntryType>() : original.getArgument(),
+        override == null ? new ArrayList<EntryType>() : override.getArgument());
 
-    SystemPropertiesType rval = new SystemPropertiesType();
-    rval.getAny().addAll(any);
-    return rval;
-  }
-
-  private VmArgumentsType overrideVmArguments(final VmArgumentsType original,
-      final VmArgumentsType override) {
-
-    List<Object> any = override(
-        original == null ? new ArrayList<Object>() : original.getAny(),
-        override == null ? new ArrayList<Object>() : override.getAny());
-
-    VmArgumentsType rval = new VmArgumentsType();
-    rval.getAny().addAll(any);
+    ArgumentsType rval = new ArgumentsType();
+    rval.getArgument().addAll(any);
     return rval;
   }
 
@@ -283,13 +247,12 @@ public class DistributedEnvironmentConfigurationProvider {
     }
   }
 
-  private void removeKey(final List<Object> rvals, final String overridingKey) {
-    Iterator<Object> rvalIterator = rvals.iterator();
+  private void removeKey(final List<EntryType> rvals, final String overridingKey) {
+    Iterator<EntryType> rvalIterator = rvals.iterator();
     while (rvalIterator.hasNext()) {
 
-      Object rval = rvalIterator.next();
-      Node rvalNode = (Node) rval;
-      String rvalKey = rvalNode.getNodeName();
+      EntryType rval = rvalIterator.next();
+      String rvalKey = rval.getKey();
 
       if (rvalKey.equals(overridingKey)) {
         rvalIterator.remove();
@@ -297,16 +260,15 @@ public class DistributedEnvironmentConfigurationProvider {
     }
   }
 
-  private void removeNullOrEmptyValues(final List<Object> rvals) {
+  private void removeNullOrEmptyValues(final List<EntryType> rvals) {
 
-    Iterator<Object> rvalIterator = rvals.iterator();
+    Iterator<EntryType> rvalIterator = rvals.iterator();
     while (rvalIterator.hasNext()) {
 
-      Object rval = rvalIterator.next();
-      Node rvalNode = (Node) rval;
-      String rvalValue = rvalNode.getTextContent();
+      EntryType rval = rvalIterator.next();
+      String rvalValue = rval.getValue();
 
-      if ((rvalValue == null) || rvalValue.isEmpty()) {
+      if (rvalValue == null || "".equals(rvalValue.trim())) {
         rvalIterator.remove();
       }
     }

@@ -28,20 +28,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.ArgumentsType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ArtifactType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ArtifactsType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.BundleDataType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.EntryType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.EnvironmentType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ParsableType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ParsablesType;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.ProgramArgumentsType;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.SystemPropertiesType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.UseByType;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.VmArgumentsType;
 import org.junit.Assert;
 import org.junit.Test;
-import org.w3c.dom.Node;
 
 public class DistSchemaProviderTest {
 
@@ -307,15 +305,6 @@ public class DistSchemaProviderTest {
 
     Assert.assertArrayEquals(
         new String[] {
-            "-Dorg.osgi.framework.system.packages=javax.crypto.spec,javax.crypto,etc",
-            "-Dfelix.cm.dir=../../../configadmin",
-            "-Dorg.osgi.service.http.port=-1",
-            "-Dorg.osgi.service.http.port.secure=4949",
-            "-Dmvel2.disable.jit=true",
-            "-Deosgi.environment.id=equinoxtest" },
-        ideConf.systemProperties.toArray(new String[] {}));
-    Assert.assertArrayEquals(
-        new String[] {
             "-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar="
                 + "append=true,dumponexit=true,"
                 + "output=tcpserver,"
@@ -328,15 +317,6 @@ public class DistSchemaProviderTest {
 
     Assert.assertArrayEquals(
         new String[] {
-            "-Dorg.osgi.framework.system.packages=javax.crypto.spec,javax.crypto,etc",
-            "-Dfelix.cm.dir=../../../configadmin",
-            "-Dorg.osgi.service.http.port=-1",
-            "-Dorg.osgi.service.http.port.secure=0",
-            "-Dmvel2.disable.jit=true",
-            "-Deosgi.environment.id=equinoxtest" },
-        testConf.systemProperties.toArray(new String[] {}));
-    Assert.assertArrayEquals(
-        new String[] {
             "-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar="
                 + "append=true,dumponexit=true,"
                 + "includes=org.everit.osgi.resource.*,"
@@ -347,15 +327,6 @@ public class DistSchemaProviderTest {
         new String[] {},
         testConf.programArguments.toArray(new String[] {}));
 
-    Assert.assertArrayEquals(
-        new String[] {
-            "-Dorg.osgi.framework.system.packages=javax.crypto.spec,javax.crypto,etc",
-            "-Dfelix.cm.dir=../../../configadmin",
-            "-Dorg.osgi.service.http.port=-1",
-            "-Dorg.osgi.service.http.port.secure=4848",
-            "-Dmvel2.disable.jit=true",
-            "-Deosgi.environment.id=equinoxtest" },
-        parsablesConf.systemProperties.toArray(new String[] {}));
     Assert.assertArrayEquals(
         new String[] {
             "-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar="
@@ -396,13 +367,7 @@ public class DistSchemaProviderTest {
 
     LaunchConfigType ideConf = distIde.getLaunchConfig();
     Assert.assertNull(ideConf.getOverrides());
-    assertMap(toMap(ideConf.getSystemProperties()),
-        "org.osgi.framework.system.packages", "javax.crypto.spec,javax.crypto,etc",
-        "felix.cm.dir", "../../../configadmin",
-        "org.osgi.service.http.port", "-1",
-        "org.osgi.service.http.port.secure", "4949",
-        "mvel2.disable.jit", "true",
-        "eosgi.environment.id", "equinoxtest");
+
     assertMap(toMap(ideConf.getVmArguments()),
         "javaagentJacoco", "-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar="
             + "append=true,dumponexit=true,"
@@ -413,13 +378,6 @@ public class DistSchemaProviderTest {
 
     LaunchConfigType testConf = distTest.getLaunchConfig();
     Assert.assertNull(testConf.getOverrides());
-    assertMap(toMap(testConf.getSystemProperties()),
-        "org.osgi.framework.system.packages", "javax.crypto.spec,javax.crypto,etc",
-        "felix.cm.dir", "../../../configadmin",
-        "org.osgi.service.http.port", "-1",
-        "org.osgi.service.http.port.secure", "0",
-        "mvel2.disable.jit", "true",
-        "eosgi.environment.id", "equinoxtest");
     assertMap(toMap(testConf.getVmArguments()),
         "javaagentJacoco", "-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar="
             + "append=true,dumponexit=true,"
@@ -430,13 +388,6 @@ public class DistSchemaProviderTest {
 
     LaunchConfigType parsablesConf = distParsables.getLaunchConfig();
     Assert.assertNull(parsablesConf.getOverrides());
-    assertMap(toMap(parsablesConf.getSystemProperties()),
-        "org.osgi.framework.system.packages", "javax.crypto.spec,javax.crypto,etc",
-        "felix.cm.dir", "../../../configadmin",
-        "org.osgi.service.http.port", "-1",
-        "org.osgi.service.http.port.secure", "4848",
-        "mvel2.disable.jit", "true",
-        "eosgi.environment.id", "equinoxtest");
     assertMap(toMap(parsablesConf.getVmArguments()),
         "javaagentJacoco", "-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar="
             + "append=true,dumponexit=true,"
@@ -450,27 +401,18 @@ public class DistSchemaProviderTest {
 
   }
 
-  private Map<String, String> toMap(final List<Object> any) {
+  private Map<String, String> toMap(final ArgumentsType programArguments) {
+    return toMap(programArguments.getArgument());
+  }
+
+  private Map<String, String> toMap(final List<EntryType> entries) {
     Map<String, String> rval = new HashMap<String, String>();
-    for (Object object : any) {
-      Node node = (Node) object;
-      String key = node.getNodeName();
-      String value = node.getTextContent();
+    for (EntryType entry : entries) {
+      String key = entry.getKey();
+      String value = entry.getValue();
       rval.put(key, value);
     }
     return rval;
-  }
-
-  private Map<String, String> toMap(final ProgramArgumentsType programArguments) {
-    return toMap(programArguments.getAny());
-  }
-
-  private Map<String, String> toMap(final SystemPropertiesType systemProperties) {
-    return toMap(systemProperties.getAny());
-  }
-
-  private Map<String, String> toMap(final VmArgumentsType vmArguments) {
-    return toMap(vmArguments.getAny());
   }
 
 }

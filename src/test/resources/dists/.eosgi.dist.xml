@@ -1138,45 +1138,31 @@
   </parsables>
 
   <launchConfig mainClass="org.eclipse.core.runtime.adaptor.EclipseStarter">
-    <systemProperties>
-      <org.osgi.framework.system.packages>javax.crypto.spec,javax.crypto,etc</org.osgi.framework.system.packages>
-      <felix.cm.dir>../../../configadmin</felix.cm.dir>
-      <org.osgi.service.http.port>-1</org.osgi.service.http.port>
-      <org.osgi.service.http.port.secure>0</org.osgi.service.http.port.secure>
-      <mvel2.disable.jit>true</mvel2.disable.jit>
-      <eosgi.environment.id>equinoxtest</eosgi.environment.id>
-    </systemProperties>
     <vmArguments>
-      <javaagentJacoco>-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar=append=true,dumponexit=true,includes=org.everit.osgi.resource.*,output=file,destfile=equinoxtest\jacoco.exec,sessionid=equinoxtest_1447147594596</javaagentJacoco>
-      <debug></debug>
-      <debugport></debugport>
+      <argument key="javaagentJacoco">-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar=append=true,dumponexit=true,includes=org.everit.osgi.resource.*,output=file,destfile=equinoxtest\jacoco.exec,sessionid=equinoxtest_1447147594596</argument>
+      <argument key="debug"></argument>
+      <argument key="debugport" />
     </vmArguments>
     <programArguments>
     </programArguments>
     <overrides>
       <override>
         <useBy>PARSABLES</useBy>
-        <systemProperties>
-          <org.osgi.service.http.port.secure>4848</org.osgi.service.http.port.secure>
-        </systemProperties>
         <vmArguments>
-          <javaagentJacoco>-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar=append=true,dumponexit=true,output=file,destfile=equinoxtest\jacoco.exec,sessionid=equinoxtest_1447147594596</javaagentJacoco>
-          <debug>-Xdebug</debug>
-          <debugport>-Xrunjdwp:server=y,transport=dt_socket,address=9009,suspend=n</debugport>
+          <argument key="javaagentJacoco">-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar=append=true,dumponexit=true,output=file,destfile=equinoxtest\jacoco.exec,sessionid=equinoxtest_1447147594596</argument>
+          <argument key="debug">-Xdebug</argument>
+          <argument key="debugport">-Xrunjdwp:server=y,transport=dt_socket,address=9009,suspend=n</argument>
         </vmArguments>
         <programArguments>
-          <configuration>-configuration</configuration>
+          <argument key="configuration">-configuration</argument>
         </programArguments>
       </override>
       <override>
         <useBy>IDE</useBy>
-        <systemProperties>
-          <org.osgi.service.http.port.secure>4949</org.osgi.service.http.port.secure>
-        </systemProperties>
         <vmArguments>
-          <javaagentJacoco>-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar=append=true,dumponexit=true,output=tcpserver,destfile=equinoxtest\jacoco.exec,sessionid=equinoxtest_1447147594596</javaagentJacoco>
-          <debug></debug>
-          <debugport></debugport>
+          <argument key="javaagentJacoco">-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar=append=true,dumponexit=true,output=tcpserver,destfile=equinoxtest\jacoco.exec,sessionid=equinoxtest_1447147594596</argument>
+          <argument key="debug" />
+          <argument key="debugport" />
         </vmArguments>
         <programArguments>
         </programArguments>

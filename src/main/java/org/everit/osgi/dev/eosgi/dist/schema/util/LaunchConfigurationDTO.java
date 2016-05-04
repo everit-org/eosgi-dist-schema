@@ -29,8 +29,6 @@ public class LaunchConfigurationDTO {
 
   public final List<String> programArguments;
 
-  public final List<String> systemProperties;
-
   public final List<String> vmArguments;
 
   /**
@@ -40,20 +38,17 @@ public class LaunchConfigurationDTO {
    *          the fully qualified name of the main class to start
    * @param classpath
    *          the classpath required to start the environment
-   * @param systemProperties
-   *          the system properties used to start the environment
    * @param vmArguments
    *          the VM arguments used to start the environment
    * @param programArguments
    *          the program arguments used to start environment
    */
   public LaunchConfigurationDTO(final String mainClass,
-      final String classpath, final List<String> systemProperties, final List<String> vmArguments,
+      final String classpath, final List<String> vmArguments,
       final List<String> programArguments) {
     super();
     this.mainClass = mainClass;
     this.classpath = classpath;
-    this.systemProperties = Collections.unmodifiableList(systemProperties);
     this.vmArguments = Collections.unmodifiableList(vmArguments);
     this.programArguments = Collections.unmodifiableList(programArguments);
   }
@@ -76,7 +71,6 @@ public class LaunchConfigurationDTO {
     if (isClasspathChanged(existingConfig)
         || isMainClassChanged(existingConfig)
         || isPorgramArgumentsChanged(existingConfig)
-        || isSystemPropertiesChanged(existingConfig)
         || isVmArgumentsChanged(existingConfig)) {
       return true;
     }
@@ -94,10 +88,6 @@ public class LaunchConfigurationDTO {
 
   private boolean isPorgramArgumentsChanged(final LaunchConfigurationDTO existingConfig) {
     return !existingConfig.programArguments.equals(programArguments);
-  }
-
-  private boolean isSystemPropertiesChanged(final LaunchConfigurationDTO existingConfig) {
-    return !existingConfig.systemProperties.equals(systemProperties);
   }
 
   private boolean isVmArgumentsChanged(final LaunchConfigurationDTO existingConfig) {

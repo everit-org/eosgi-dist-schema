@@ -107,13 +107,13 @@
 
   <complexType name="ArtifactsType">
     <sequence>
-      <element name="artifact" type="tns:ArtifactType" maxOccurs="unbounded"></element>
+      <element name="artifact" type="tns:ArtifactType" maxOccurs="unbounded" minOccurs="0"></element>
     </sequence>
   </complexType>
 
   <complexType name="ParsablesType">
     <sequence>
-      <element name="parsable" type="tns:ParsableType" maxOccurs="unbounded"></element>
+      <element name="parsable" type="tns:ParsableType" maxOccurs="unbounded" minOccurs="0"></element>
     </sequence>
   </complexType>
 
@@ -123,17 +123,20 @@
         A file that will be parsed with Velocity after distributing the artifacts. The following
         variables can be used:
 
-        The schema of the XML that describes the distribution environment. The
-        XML file is parsed with Velocity before
-        processing. The folling variables can be used:
+        The schema of the XML that describes the distribution environment. The XML file is parsed
+        with Velocity before processing. The folling variables can be used:
         <ul>
           <li>distributableArtifacts: List of DistributableArtifact objects</li>
           <li>environment: An EnvironmentConfiguration object</li>
-          <li>distributionPackage: The content of the distribution package XML (that is described by
-            this schema)</li>
+          <li>
+            distributionPackage: The content of the distribution package XML (that is described by
+            this schema)
+          </li>
           <li>escapeTool: A simply utility class that can be used to do escapes</li>
-          <li>distUtil: A class that contains util functions that help creating a distribution
-            package.</li>
+          <li>
+            distUtil: A class that contains util functions that help creating a distribution
+            package.
+          </li>
         </ul>
       </documentation>
     </annotation>
@@ -147,6 +150,7 @@
         <documentation>The encoding of the parseable file.</documentation>
       </annotation>
     </attribute>
+    <attribute name="templateEngine" type="tns:TemplateEnginesType" default="TEXT"></attribute>
   </complexType>
 
   <complexType name="BundleDataType">
@@ -191,25 +195,20 @@
   </simpleType>
 
 
-  <complexType name="SystemPropertiesType">
-    <sequence>
-      <any minOccurs="0" maxOccurs="unbounded"></any>
-    </sequence>
-  </complexType>
 
-  <complexType name="VmArgumentsType">
+  <complexType name="ArgumentsType">
     <sequence>
-      <any minOccurs="0" maxOccurs="unbounded"></any>
+      <element name="argument" type="tns:EntryType" minOccurs="0" maxOccurs="unbounded" nillable="true"></element>
     </sequence>
+    
   </complexType>
 
   <complexType name="AbstractLaunchConfigType" abstract="true">
     <sequence>
-      <element name="systemProperties" type="tns:SystemPropertiesType" maxOccurs="1"
-        minOccurs="0"></element>
-      <element name="vmArguments" type="tns:VmArgumentsType" maxOccurs="1" minOccurs="0"></element>
-      <element name="programArguments" type="tns:ProgramArgumentsType" maxOccurs="1"
-        minOccurs="0"></element>
+      <element name="vmArguments" type="tns:ArgumentsType" maxOccurs="1" minOccurs="0"></element>
+      <element name="programArguments" type="tns:ArgumentsType" maxOccurs="1"
+        minOccurs="0">
+      </element>
     </sequence>
   </complexType>
 
@@ -252,16 +251,26 @@
     </complexContent>
   </complexType>
 
-  <complexType name="ProgramArgumentsType">
-    <sequence>
-      <any minOccurs="0" maxOccurs="unbounded"></any>
-    </sequence>
-  </complexType>
 
 
   <complexType name="RuntimePathsType">
     <sequence>
-      <element name="pathRegex" type="string" minOccurs="1" maxOccurs="unbounded"></element>
+      <element name="pathRegex" type="string" minOccurs="0" maxOccurs="unbounded"></element>
     </sequence>
+  </complexType>
+
+  <simpleType name="TemplateEnginesType">
+    <restriction base="string">
+      <enumeration value="TEXT"></enumeration>
+      <enumeration value="XML"></enumeration>
+    </restriction>
+  </simpleType>
+
+  <complexType name="EntryType">
+    <simpleContent>
+      <extension base="string">
+        <attribute name="key" type="string" use="required"></attribute>
+      </extension>
+    </simpleContent>
   </complexType>
 </schema>

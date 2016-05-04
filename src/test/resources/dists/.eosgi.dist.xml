@@ -16,7 +16,7 @@
     limitations under the License.
 
 -->
-<distributionPackage environmentId="equinoxtest"
+<environment id="equinoxtest"
   xmlns="http://everit.org/eosgi/dist/definition/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <artifacts>
@@ -1183,4 +1183,4 @@
       </override>
     </overrides>
   </launchConfig>
-</distributionPackage>
+</environment>

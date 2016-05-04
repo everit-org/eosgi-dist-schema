@@ -203,12 +203,6 @@
     </sequence>
   </complexType>
 
-  <complexType name="EnvironmentOverrideType">
-    <sequence>
-      <element name="useBy" type="tns:UseByType" maxOccurs="1" minOccurs="1"></element>
-    </sequence>
-  </complexType>
-
   <complexType name="AbstractLaunchConfigType" abstract="true">
     <sequence>
       <element name="systemProperties" type="tns:SystemPropertiesType" maxOccurs="1"

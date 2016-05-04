@@ -25,7 +25,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.DistributionPackageType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.EnvironmentType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigOverrideType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigOverridesType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigType;
@@ -65,7 +65,7 @@ public class DistributedEnvironmentConfigurationProvider {
    * @return the environment configuration
    */
   public LaunchConfigurationDTO getLaunchConfiguration(
-      final DistributionPackageType overriddenDistributionPackage) {
+      final EnvironmentType overriddenDistributionPackage) {
 
     if (overriddenDistributionPackage == null) {
       return null;
@@ -125,10 +125,10 @@ public class DistributedEnvironmentConfigurationProvider {
    *          the type of the usage
    * @return the distribution package
    */
-  public DistributionPackageType getOverriddenDistributionPackage(final File distFolderFile,
-      final UseByType useBy) {
+  public EnvironmentType getOverriddenDistributedEnvironmentConfig(
+      final File distFolderFile, final UseByType useBy) {
 
-    DistributionPackageType distributionPackageType = readDistConfig(distFolderFile);
+    EnvironmentType distributionPackageType = readDistConfig(distFolderFile);
 
     if (distributionPackageType == null) {
       return null;
@@ -251,7 +251,7 @@ public class DistributedEnvironmentConfigurationProvider {
   /**
    * Returns the original distribution package read from the eosgi.dist.xml.
    */
-  private DistributionPackageType readDistConfig(final File distFolderFile) {
+  private EnvironmentType readDistConfig(final File distFolderFile) {
 
     File distConfigFile = new File(distFolderFile, "/.eosgi.dist.xml");
     if (!distConfigFile.exists()) {
@@ -264,12 +264,12 @@ public class DistributedEnvironmentConfigurationProvider {
       if (distributionPackage instanceof JAXBElement) {
 
         @SuppressWarnings("unchecked")
-        JAXBElement<DistributionPackageType> jaxbDistPack =
-            (JAXBElement<DistributionPackageType>) distributionPackage;
+        JAXBElement<EnvironmentType> jaxbDistPack =
+            (JAXBElement<EnvironmentType>) distributionPackage;
         distributionPackage = jaxbDistPack.getValue();
       }
-      if (distributionPackage instanceof DistributionPackageType) {
-        return (DistributionPackageType) distributionPackage;
+      if (distributionPackage instanceof EnvironmentType) {
+        return (EnvironmentType) distributionPackage;
       } else {
         throw new IllegalStateException(
             "The root element in the provided distribution configuration file "

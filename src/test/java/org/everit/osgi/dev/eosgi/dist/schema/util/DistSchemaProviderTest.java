@@ -31,7 +31,7 @@ import java.util.Set;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ArtifactType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ArtifactsType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.BundleDataType;
-import org.everit.osgi.dev.eosgi.dist.schema.xsd.DistributionPackageType;
+import org.everit.osgi.dev.eosgi.dist.schema.xsd.EnvironmentType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.LaunchConfigType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ParsableType;
 import org.everit.osgi.dev.eosgi.dist.schema.xsd.ParsablesType;
@@ -85,7 +85,8 @@ public class DistSchemaProviderTest {
         }
       };
 
-  private final DistributedEnvironmentConfigurationProvider distSchemaProvider = new DistributedEnvironmentConfigurationProvider();
+  private final DistributedEnvironmentConfigurationProvider distSchemaProvider =
+      new DistributedEnvironmentConfigurationProvider();
 
   private final Comparator<ParsableType> parsableTypeComparator = new Comparator<ParsableType>() {
 
@@ -198,14 +199,14 @@ public class DistSchemaProviderTest {
   }
 
   private void assertSameInformation(
-      final DistributionPackageType distIde,
-      final DistributionPackageType distTest,
-      final DistributionPackageType distParsables) {
+      final EnvironmentType distIde,
+      final EnvironmentType distTest,
+      final EnvironmentType distParsables) {
 
     assertEquals("equinoxtest",
-        distIde.getEnvironmentId(),
-        distTest.getEnvironmentId(),
-        distParsables.getEnvironmentId());
+        distIde.getId(),
+        distTest.getId(),
+        distParsables.getId());
     assertEquals(null,
         distIde.getFrameworkStartLevel(),
         distTest.getFrameworkStartLevel(),
@@ -279,23 +280,24 @@ public class DistSchemaProviderTest {
 
     File distFolderFile = getDistFolderFile();
 
-    DistributionPackageType ideDistributionPackage =
-        distSchemaProvider.getOverriddenDistributionPackage(distFolderFile, UseByType.IDE);
+    EnvironmentType ideDistributionPackage =
+        distSchemaProvider.getOverriddenDistributedEnvironmentConfig(distFolderFile, UseByType.IDE);
 
     LaunchConfigurationDTO ideConf = distSchemaProvider
         .getLaunchConfiguration(ideDistributionPackage);
     Assert.assertNotNull(ideConf);
 
-    DistributionPackageType integrationTestDistributionPackage =
-        distSchemaProvider.getOverriddenDistributionPackage(distFolderFile,
+    EnvironmentType integrationTestDistributionPackage =
+        distSchemaProvider.getOverriddenDistributedEnvironmentConfig(distFolderFile,
             UseByType.INTEGRATION_TEST);
 
     LaunchConfigurationDTO testConf = distSchemaProvider
         .getLaunchConfiguration(integrationTestDistributionPackage);
     Assert.assertNotNull(testConf);
 
-    DistributionPackageType parsablesDistributionPackage =
-        distSchemaProvider.getOverriddenDistributionPackage(distFolderFile, UseByType.PARSABLES);
+    EnvironmentType parsablesDistributionPackage =
+        distSchemaProvider.getOverriddenDistributedEnvironmentConfig(distFolderFile,
+            UseByType.PARSABLES);
 
     LaunchConfigurationDTO parsablesConf = distSchemaProvider
         .getLaunchConfiguration(parsablesDistributionPackage);
@@ -375,18 +377,18 @@ public class DistSchemaProviderTest {
 
     File distFolderFile = getDistFolderFile();
 
-    DistributionPackageType distIde = distSchemaProvider
-        .getOverriddenDistributionPackage(distFolderFile, UseByType.IDE);
+    EnvironmentType distIde = distSchemaProvider
+        .getOverriddenDistributedEnvironmentConfig(distFolderFile, UseByType.IDE);
 
     Assert.assertNotNull(distIde);
 
-    DistributionPackageType distTest = distSchemaProvider
-        .getOverriddenDistributionPackage(distFolderFile, UseByType.INTEGRATION_TEST);
+    EnvironmentType distTest = distSchemaProvider
+        .getOverriddenDistributedEnvironmentConfig(distFolderFile, UseByType.INTEGRATION_TEST);
 
     Assert.assertNotNull(distTest);
 
-    DistributionPackageType distParsables = distSchemaProvider
-        .getOverriddenDistributionPackage(distFolderFile, UseByType.PARSABLES);
+    EnvironmentType distParsables = distSchemaProvider
+        .getOverriddenDistributedEnvironmentConfig(distFolderFile, UseByType.PARSABLES);
 
     Assert.assertNotNull(distParsables);
 

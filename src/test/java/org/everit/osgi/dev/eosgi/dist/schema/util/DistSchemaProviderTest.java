@@ -85,7 +85,7 @@ public class DistSchemaProviderTest {
         }
       };
 
-  private final DistSchemaProvider distSchemaProvider = new DistSchemaProvider();
+  private final DistributedEnvironmentConfigurationProvider distSchemaProvider = new DistributedEnvironmentConfigurationProvider();
 
   private final Comparator<ParsableType> parsableTypeComparator = new Comparator<ParsableType>() {
 

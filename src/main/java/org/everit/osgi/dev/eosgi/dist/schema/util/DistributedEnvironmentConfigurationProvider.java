@@ -39,14 +39,14 @@ import org.w3c.dom.Node;
 /**
  * Provider of the configuration of an environment.
  */
-public class DistSchemaProvider {
+public class DistributedEnvironmentConfigurationProvider {
 
   private final JAXBContext jaxbContext;
 
   /**
    * Constructor.
    */
-  public DistSchemaProvider() {
+  public DistributedEnvironmentConfigurationProvider() {
     try {
       jaxbContext = JAXBContext.newInstance(
           ObjectFactory.class.getPackage().getName(),

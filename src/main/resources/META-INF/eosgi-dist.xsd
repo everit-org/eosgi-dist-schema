@@ -21,45 +21,54 @@
 
   <annotation>
     <documentation>
-      The schema of the XML that describes the distribution environment. The XML file is parsed with Velocity before
-      processing. The folling variables can be used:
+      The schema of the XML that describes the distribution environment. The XML file is parsed with
+      Everit templating-text before processing. The folling variables can be used:
       <ul>
         <li>distributableArtifacts: List of DistributableArtifact objects</li>
         <li>environment: An EnvironmentConfiguration object</li>
-        <li>copyMode: The default copy mode that should be used during distributing artifacts</li>
-        <li>distUtil: A class that contains util functions that help creating a distribution package.</li>
+        <li>distUtil: A class that contains util functions that help creating a distribution
+          package.</li>
       </ul>
     </documentation>
   </annotation>
 
-  <element name="distributionPackage" type="tns:DistributionPackageType">
+  <element name="environment" type="tns:EnvironmentType">
     <annotation>
       <documentation></documentation>
     </annotation>
   </element>
 
-  <complexType name="DistributionPackageType">
+  <complexType name="EnvironmentType">
     <sequence maxOccurs="1" minOccurs="0">
       <element name="artifacts" type="tns:ArtifactsType" maxOccurs="1" minOccurs="0">
         <annotation>
           <documentation>
-            Artifacts that should be resolved (downloaded and copied) into the distribution package.
+            Artifacts that should be resolved (downloaded and copied) into the
+            distribution package.
           </documentation>
         </annotation>
       </element>
       <element name="parsables" type="tns:ParsablesType" maxOccurs="1" minOccurs="0"></element>
-            <element name="runtimePaths" type="tns:RuntimePathsType" minOccurs="0" maxOccurs="1"></element>
-            <element name="launchConfig" type="tns:LaunchConfigType" minOccurs="0" maxOccurs="1"></element>
+      <element name="runtimePaths" type="tns:RuntimePathsType" minOccurs="0" maxOccurs="1"></element>
+      <element name="launchConfig" type="tns:LaunchConfigType" minOccurs="0" maxOccurs="1"></element>
     </sequence>
-    <attribute name="environmentId" type="string" use="required"></attribute>
+    <attribute name="id" type="string" use="required">
+      <annotation>
+        <documentation>Id of the environment.</documentation>
+      </annotation>
+    </attribute>
     <attribute name="frameworkStartLevel" type="int" use="optional">
       <annotation>
         <documentation>The start level of the OSGi framework.</documentation>
-      </annotation></attribute>
+      </annotation>
+    </attribute>
     <attribute name="bundleStartLevel" type="int" use="optional">
       <annotation>
-        <documentation>Start level that is automatically assigned to a bundle that is installed into the OSGi container.</documentation>
-      </annotation></attribute>
+        <documentation>Start level that is automatically assigned to a bundle that is installed into
+          the OSGi container.
+        </documentation>
+      </annotation>
+    </attribute>
   </complexType>
 
   <complexType name="ArtifactType">
@@ -74,19 +83,22 @@
       <element name="classifier" type="string" minOccurs="0" maxOccurs="1"></element>
       <element name="bundle" type="tns:BundleDataType" minOccurs="0" maxOccurs="1">
         <annotation>
-          <documentation>In case this is an OSGi bundle, additional behavior can be defined.</documentation>
+          <documentation>In case this is an OSGi bundle, additional behavior can be defined.
+          </documentation>
         </annotation>
       </element>
     </sequence>
     <attribute name="targetFolder" type="string">
       <annotation>
-        <documentation>The target folder where the artifact should be copied to inside the distribution package.
+        <documentation>The target folder where the artifact should be copied to inside the
+          distribution package.
         </documentation>
       </annotation>
     </attribute>
     <attribute name="targetFile" type="string">
       <annotation>
-        <documentation>The target name of the artifact file. If not specified, the target file will have the same name
+        <documentation>The target name of the artifact file. If not specified, the target file will
+          have the same name
           as the maven artifact file.
         </documentation>
       </annotation>
@@ -108,16 +120,20 @@
   <complexType name="ParsableType">
     <annotation>
       <documentation>
-        A file that will be parsed with Velocity after distributing the artifacts. The following variables can be used:
+        A file that will be parsed with Velocity after distributing the artifacts. The following
+        variables can be used:
 
-        The schema of the XML that describes the distribution environment. The XML file is parsed with Velocity before
+        The schema of the XML that describes the distribution environment. The
+        XML file is parsed with Velocity before
         processing. The folling variables can be used:
         <ul>
           <li>distributableArtifacts: List of DistributableArtifact objects</li>
           <li>environment: An EnvironmentConfiguration object</li>
-          <li>distributionPackage: The content of the distribution package XML (that is described by this schema)</li>
+          <li>distributionPackage: The content of the distribution package XML (that is described by
+            this schema)</li>
           <li>escapeTool: A simply utility class that can be used to do escapes</li>
-          <li>distUtil: A class that contains util functions that help creating a distribution package.</li>
+          <li>distUtil: A class that contains util functions that help creating a distribution
+            package.</li>
         </ul>
       </documentation>
     </annotation>
@@ -147,7 +163,8 @@
       </element>
       <element name="location" type="string" minOccurs="1" maxOccurs="1">
         <annotation>
-          <documentation>The file URI that can be used to update/install the bundle. It might start with
+          <documentation>The file URI that can be used to update/install the bundle. It might start
+            with
             "reference:file:" or "file:".
           </documentation>
         </annotation>
@@ -182,7 +199,7 @@
 
   <complexType name="VmArgumentsType">
     <sequence>
-        <any minOccurs="0" maxOccurs="unbounded"></any>
+      <any minOccurs="0" maxOccurs="unbounded"></any>
     </sequence>
   </complexType>
 
@@ -194,9 +211,11 @@
 
   <complexType name="AbstractLaunchConfigType" abstract="true">
     <sequence>
-      <element name="systemProperties" type="tns:SystemPropertiesType" maxOccurs="1" minOccurs="0"></element>
+      <element name="systemProperties" type="tns:SystemPropertiesType" maxOccurs="1"
+        minOccurs="0"></element>
       <element name="vmArguments" type="tns:VmArgumentsType" maxOccurs="1" minOccurs="0"></element>
-      <element name="programArguments" type="tns:ProgramArgumentsType" maxOccurs="1" minOccurs="0"></element>
+      <element name="programArguments" type="tns:ProgramArgumentsType" maxOccurs="1"
+        minOccurs="0"></element>
     </sequence>
   </complexType>
 
@@ -224,7 +243,8 @@
 
   <complexType name="LaunchConfigOverridesType">
     <sequence>
-      <element name="override" type="tns:LaunchConfigOverrideType" maxOccurs="unbounded" minOccurs="0"></element>
+      <element name="override" type="tns:LaunchConfigOverrideType" maxOccurs="unbounded"
+        minOccurs="0"></element>
     </sequence>
   </complexType>
 

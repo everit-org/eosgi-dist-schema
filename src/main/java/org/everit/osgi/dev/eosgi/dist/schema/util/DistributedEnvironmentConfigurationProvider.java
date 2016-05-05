@@ -17,6 +17,8 @@ package org.everit.osgi.dev.eosgi.dist.schema.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,6 +40,13 @@ import org.everit.osgi.dev.eosgi.dist.schema.xsd.UseByType;
  * Provider of the configuration of an environment.
  */
 public class DistributedEnvironmentConfigurationProvider {
+
+  private final static Comparator<EntryType> ENTRY_COMPARATOR = new Comparator<EntryType>() {
+    @Override
+    public int compare(final EntryType o1, final EntryType o2) {
+      return o1.getKey().compareTo(o2.getKey());
+    }
+  };
 
   private final JAXBContext jaxbContext;
 
@@ -141,6 +150,9 @@ public class DistributedEnvironmentConfigurationProvider {
 
     removeNullOrEmptyValues(launchConfig.getProgramArguments().getArgument());
     removeNullOrEmptyValues(launchConfig.getVmArguments().getArgument());
+
+    Collections.sort(launchConfig.getProgramArguments().getArgument(), ENTRY_COMPARATOR);
+    Collections.sort(launchConfig.getVmArguments().getArgument(), ENTRY_COMPARATOR);
 
     return distributionPackageType;
   }

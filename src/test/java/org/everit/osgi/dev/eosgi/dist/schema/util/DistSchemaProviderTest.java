@@ -329,13 +329,14 @@ public class DistSchemaProviderTest {
 
     Assert.assertArrayEquals(
         new String[] {
+            "-Xdebug",
+            "-Xrunjdwp:server=y,transport=dt_socket,address=9009,suspend=n",
             "-javaagent:org.jacoco.agent-0.7.5.201505241946-runtime.jar="
                 + "append=true,dumponexit=true,"
                 + "output=file,"
                 + "destfile=equinoxtest\\jacoco.exec,"
-                + "sessionid=equinoxtest_1447147594596",
-            "-Xdebug",
-            "-Xrunjdwp:server=y,transport=dt_socket,address=9009,suspend=n" },
+                + "sessionid=equinoxtest_1447147594596"
+        },
         parsablesConf.vmArguments.toArray(new String[] {}));
     Assert.assertArrayEquals(
         new String[] {

@@ -15,9 +15,9 @@
  */
 package org.everit.osgi.dev.eosgi.dist.schema.util;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * Utility to merge "default" and "override" maps.
@@ -38,7 +38,7 @@ public final class MergeUtil {
       final Map<String, String> default1,
       final Map<String, String> default2) {
 
-    Map<String, String> rval = new HashMap<String, String>();
+    Map<String, String> rval = new TreeMap<String, String>();
 
     if ((default1 != null) && !default1.isEmpty()) {
       rval.putAll(default1);
@@ -71,7 +71,7 @@ public final class MergeUtil {
       final Map<String, String> default2,
       final Map<String, String> override2) {
 
-    Map<String, String> cleaned = new HashMap<String, String>();
+    Map<String, String> cleaned = new TreeMap<String, String>();
 
     if ((override1 != null) && !override1.isEmpty()) {
       cleaned.putAll(override1);

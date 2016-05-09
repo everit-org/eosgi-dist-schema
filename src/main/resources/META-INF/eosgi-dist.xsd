@@ -49,7 +49,7 @@
         </annotation>
       </element>
       <element name="parsables" type="tns:ParsablesType" maxOccurs="1" minOccurs="0"></element>
-      <element name="runtimePaths" type="tns:RuntimePathsType" minOccurs="0" maxOccurs="1"></element>
+      <element name="runtimePathRegexes" type="tns:RuntimePathRegexesType" minOccurs="0" maxOccurs="1"></element>
       <element name="launchConfig" type="tns:LaunchConfigType" minOccurs="0" maxOccurs="1"></element>
     </sequence>
     <attribute name="id" type="string" use="required">
@@ -253,9 +253,9 @@
 
 
 
-  <complexType name="RuntimePathsType">
+  <complexType name="RuntimePathRegexesType">
     <sequence>
-      <element name="pathRegex" type="string" minOccurs="0" maxOccurs="unbounded"></element>
+      <element name="entry" type="tns:EntryType" minOccurs="0" maxOccurs="unbounded"></element>
     </sequence>
   </complexType>
 

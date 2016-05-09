@@ -23,26 +23,26 @@
 
 package org.everit.osgi.dev.eosgi.dist.schema.xsd;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for LaunchConfigOverrideType complex type.
+ * <p>Java class for RuntimePathRegexesType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="LaunchConfigOverrideType">
+ * &lt;complexType name="RuntimePathRegexesType">
  *   &lt;complexContent>
- *     &lt;extension base="{http://everit.org/eosgi/dist/definition/4.0.0}AbstractLaunchConfigType">
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="useBy" type="{http://everit.org/eosgi/dist/definition/4.0.0}UseByType"/>
+ *         &lt;element name="entry" type="{http://everit.org/eosgi/dist/definition/4.0.0}EntryType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
- *     &lt;/extension>
+ *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -50,39 +50,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LaunchConfigOverrideType", propOrder = {
-    "useBy"
+@XmlType(name = "RuntimePathRegexesType", propOrder = {
+    "entry"
 })
-public class LaunchConfigOverrideType
-    extends AbstractLaunchConfigType
-{
+public class RuntimePathRegexesType {
 
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "string")
-    protected UseByType useBy;
+    protected List<EntryType> entry;
 
     /**
-     * Gets the value of the useBy property.
+     * Gets the value of the entry property.
      * 
-     * @return
-     *     possible object is
-     *     {@link UseByType }
-     *     
-     */
-    public UseByType getUseBy() {
-        return useBy;
-    }
-
-    /**
-     * Sets the value of the useBy property.
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the entry property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link UseByType }
-     *     
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getEntry().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link EntryType }
+     * 
+     * 
      */
-    public void setUseBy(UseByType value) {
-        this.useBy = value;
+    public List<EntryType> getEntry() {
+        if (entry == null) {
+            entry = new ArrayList<EntryType>();
+        }
+        return this.entry;
     }
 
 }

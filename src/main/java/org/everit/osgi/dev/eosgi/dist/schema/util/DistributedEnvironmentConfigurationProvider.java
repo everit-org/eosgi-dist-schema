@@ -148,13 +148,18 @@ public class DistributedEnvironmentConfigurationProvider {
 
     launchConfig.setOverrides(null);
 
-    removeNullOrEmptyValues(launchConfig.getProgramArguments().getArgument());
-    removeNullOrEmptyValues(launchConfig.getVmArguments().getArgument());
-
-    Collections.sort(launchConfig.getProgramArguments().getArgument(), ENTRY_COMPARATOR);
-    Collections.sort(launchConfig.getVmArguments().getArgument(), ENTRY_COMPARATOR);
+    normalizeArguments(launchConfig.getProgramArguments());
+    normalizeArguments(launchConfig.getVmArguments());
 
     return distributionPackageType;
+  }
+
+  private void normalizeArguments(final ArgumentsType arguments) {
+    if (arguments == null) {
+      return;
+    }
+    removeNullOrEmptyValues(arguments.getArgument());
+    Collections.sort(arguments.getArgument(), ENTRY_COMPARATOR);
   }
 
   private List<EntryType> override(final List<EntryType> originals,

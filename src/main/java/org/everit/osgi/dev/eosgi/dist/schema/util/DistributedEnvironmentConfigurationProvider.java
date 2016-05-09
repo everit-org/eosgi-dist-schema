@@ -41,7 +41,7 @@ import org.everit.osgi.dev.eosgi.dist.schema.xsd.UseByType;
  */
 public class DistributedEnvironmentConfigurationProvider {
 
-  private final static Comparator<EntryType> ENTRY_COMPARATOR = new Comparator<EntryType>() {
+  private static final Comparator<EntryType> ENTRY_COMPARATOR = new Comparator<EntryType>() {
     @Override
     public int compare(final EntryType o1, final EntryType o2) {
       return o1.getKey().compareTo(o2.getKey());

@@ -62,7 +62,7 @@
         <documentation>The start level of the OSGi framework.</documentation>
       </annotation>
     </attribute>
-    <attribute name="bundleStartLevel" type="int" use="optional">
+    <attribute name="initialBundleStartLevel" type="int" use="optional">
       <annotation>
         <documentation>Start level that is automatically assigned to a bundle that is installed into
           the OSGi container.

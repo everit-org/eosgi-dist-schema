@@ -210,9 +210,9 @@ public class DistSchemaProviderTest {
         distTest.getFrameworkStartLevel(),
         distParsables.getFrameworkStartLevel());
     assertEquals(null,
-        distIde.getBundleStartLevel(),
-        distTest.getBundleStartLevel(),
-        distParsables.getBundleStartLevel());
+        distIde.getInitialBundleStartLevel(),
+        distTest.getInitialBundleStartLevel(),
+        distParsables.getInitialBundleStartLevel());
 
     assertArtifacts(
         distIde.getArtifacts(),

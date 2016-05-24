@@ -27,21 +27,20 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ArgumentsType complex type.
+ * <p>Java class for PropertiesType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ArgumentsType">
+ * &lt;complexType name="PropertiesType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="argument" type="{http://everit.org/eosgi/dist/definition/4.0.0}EntryType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="property" type="{http://everit.org/eosgi/dist/definition/4.0.0}EntryType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -51,27 +50,26 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArgumentsType", propOrder = {
-    "argument"
+@XmlType(name = "PropertiesType", propOrder = {
+    "property"
 })
-public class ArgumentsType {
+public class PropertiesType {
 
-    @XmlElement(nillable = true)
-    protected List<EntryType> argument;
+    protected List<EntryType> property;
 
     /**
-     * Gets the value of the argument property.
+     * Gets the value of the property property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the argument property.
+     * This is why there is not a <CODE>set</CODE> method for the property property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getArgument().add(newItem);
+     *    getProperty().add(newItem);
      * </pre>
      * 
      * 
@@ -81,11 +79,11 @@ public class ArgumentsType {
      * 
      * 
      */
-    public List<EntryType> getArgument() {
-        if (argument == null) {
-            argument = new ArrayList<EntryType>();
+    public List<EntryType> getProperty() {
+        if (property == null) {
+            property = new ArrayList<EntryType>();
         }
-        return this.argument;
+        return this.property;
     }
 
 }

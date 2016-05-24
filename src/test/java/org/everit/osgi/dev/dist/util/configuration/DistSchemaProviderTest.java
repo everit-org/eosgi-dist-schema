@@ -20,7 +20,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,80 +27,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.everit.osgi.dev.dist.util.configuration.DistributedEnvironmentConfigurationProvider;
-import org.everit.osgi.dev.dist.util.configuration.LaunchConfigurationDTO;
 import org.everit.osgi.dev.dist.util.configuration.schema.ArgumentsType;
-import org.everit.osgi.dev.dist.util.configuration.schema.ArtifactType;
 import org.everit.osgi.dev.dist.util.configuration.schema.ArtifactsType;
-import org.everit.osgi.dev.dist.util.configuration.schema.BundleDataType;
 import org.everit.osgi.dev.dist.util.configuration.schema.EntryType;
 import org.everit.osgi.dev.dist.util.configuration.schema.EnvironmentType;
 import org.everit.osgi.dev.dist.util.configuration.schema.LaunchConfigType;
-import org.everit.osgi.dev.dist.util.configuration.schema.ParsableType;
 import org.everit.osgi.dev.dist.util.configuration.schema.ParsablesType;
 import org.everit.osgi.dev.dist.util.configuration.schema.UseByType;
 import org.junit.Assert;
 import org.junit.Test;
+import org.unitils.reflectionassert.ReflectionAssert;
 
 public class DistSchemaProviderTest {
 
-  private final Comparator<ArtifactType> artifactTypeComparator = new Comparator<ArtifactType>() {
-
-    @Override
-    public int compare(final ArtifactType o1, final ArtifactType o2) {
-      if ((o1 == null) && (o2 == null)) {
-        return 0;
-      }
-      Assert.assertNotNull(o1);
-      Assert.assertNotNull(o2);
-      Assert.assertEquals(o1.getArtifactId(), o2.getArtifactId());
-      assertEquals(o1.getBundle(), o2.getBundle(), bundleDataTypeComparator);
-      Assert.assertEquals(o1.getClassifier(), o2.getClassifier());
-      Assert.assertEquals(o1.getGroupId(), o2.getGroupId());
-      Assert.assertEquals(o1.getTargetFile(), o2.getTargetFile());
-      Assert.assertEquals(o1.getTargetFolder(), o2.getTargetFolder());
-      Assert.assertEquals(o1.getType(), o2.getType());
-      Assert.assertEquals(o1.getVersion(), o2.getVersion());
-      return 0;
-    }
-
-  };
-  private final Comparator<BundleDataType> bundleDataTypeComparator =
-      new Comparator<BundleDataType>() {
-
-        @Override
-        public int compare(final BundleDataType o1, final BundleDataType o2) {
-          if ((o1 == null) && (o2 == null)) {
-            return 0;
-          }
-          Assert.assertNotNull(o1);
-          Assert.assertNotNull(o2);
-          Assert.assertEquals(o1.getLocation(), o2.getLocation());
-          Assert.assertEquals(o1.getSymbolicName(), o2.getSymbolicName());
-          Assert.assertEquals(o1.getVersion(), o2.getVersion());
-          Assert.assertEquals(o1.getAction(), o2.getAction());
-          Assert.assertEquals(o1.getStartLevel(), o2.getStartLevel());
-          return 0;
-        }
-      };
-
   private final DistributedEnvironmentConfigurationProvider distSchemaProvider =
       new DistributedEnvironmentConfigurationProvider();
-
-  private final Comparator<ParsableType> parsableTypeComparator = new Comparator<ParsableType>() {
-
-    @Override
-    public int compare(final ParsableType o1, final ParsableType o2) {
-      if ((o1 == null) && (o2 == null)) {
-        return 0;
-      }
-      Assert.assertNotNull(o1);
-      Assert.assertNotNull(o2);
-      Assert.assertEquals(o1.getEncoding(), o2.getEncoding());
-      Assert.assertEquals(o1.getPath(), o2.getPath());
-      return 0;
-    }
-  };
 
   private void assertArtifacts(final ArtifactsType artifacts1, final ArtifactsType artifacts2,
       final ArtifactsType artifacts3) {
@@ -110,22 +50,8 @@ public class DistSchemaProviderTest {
     Assert.assertNotNull(artifacts2);
     Assert.assertNotNull(artifacts3);
 
-    assertEquals(
-        artifacts1.getArtifact(),
-        artifacts2.getArtifact(),
-        artifactTypeComparator);
-    assertEquals(
-        artifacts2.getArtifact(),
-        artifacts3.getArtifact(),
-        artifactTypeComparator);
-  }
-
-  private <T> void assertEquals(final List<T> expectedList, final List<T> actualList,
-      final Comparator<T> comparator) {
-    Assert.assertEquals(expectedList.size(), actualList.size());
-    for (int i = 0; i < expectedList.size(); i++) {
-      comparator.compare(expectedList.get(i), actualList.get(i));
-    }
+    ReflectionAssert.assertReflectionEquals(artifacts1.getArtifact(), artifacts2.getArtifact());
+    ReflectionAssert.assertReflectionEquals(artifacts2.getArtifact(), artifacts3.getArtifact());
   }
 
   private void assertEquals(final Object expected,
@@ -133,10 +59,6 @@ public class DistSchemaProviderTest {
     Assert.assertEquals(expected, actual1);
     Assert.assertEquals(actual1, actual2);
     Assert.assertEquals(actual2, actual3);
-  }
-
-  private <T> void assertEquals(final T expected, final T actual, final Comparator<T> comparator) {
-    comparator.compare(expected, actual);
   }
 
   private void assertMap(final Map<String, String> actualMap,
@@ -188,14 +110,8 @@ public class DistSchemaProviderTest {
     Assert.assertNotNull(parsables2);
     Assert.assertNotNull(parsables3);
 
-    assertEquals(
-        parsables1.getParsable(),
-        parsables2.getParsable(),
-        parsableTypeComparator);
-    assertEquals(
-        parsables2.getParsable(),
-        parsables3.getParsable(),
-        parsableTypeComparator);
+    ReflectionAssert.assertReflectionEquals(parsables1, parsables2);
+    ReflectionAssert.assertReflectionEquals(parsables2, parsables3);
   }
 
   private void assertSameInformation(

@@ -76,18 +76,13 @@
       <documentation>A maven artifact with additional information.</documentation>
     </annotation>
     <sequence>
-      <element name="groupId" type="string" minOccurs="1" maxOccurs="1"></element>
-      <element name="artifactId" type="string" minOccurs="1" maxOccurs="1"></element>
-      <element name="version" type="string" minOccurs="1" maxOccurs="1"></element>
-      <element name="type" type="string" minOccurs="0" maxOccurs="1"></element>
-      <element name="classifier" type="string" minOccurs="0" maxOccurs="1"></element>
-      <element name="bundle" type="tns:BundleDataType" minOccurs="0" maxOccurs="1">
+            <element name="id" type="string"></element>
+            <element name="properties" type="tns:PropertiesType" minOccurs="0" maxOccurs="1">
         <annotation>
-          <documentation>In case this is an OSGi bundle, additional behavior can be defined.
-          </documentation>
+          <documentation>In case this is an OSGi bundle, additional behavior can be defined.</documentation>
         </annotation>
       </element>
-    </sequence>
+        </sequence>
     <attribute name="targetFolder" type="string">
       <annotation>
         <documentation>The target folder where the artifact should be copied to inside the
@@ -153,19 +148,9 @@
     <attribute name="templateEngine" type="tns:TemplateEnginesType" default="TEXT"></attribute>
   </complexType>
 
-  <complexType name="BundleDataType">
+  <complexType name="PropertiesType">
     <sequence>
-      <element name="symbolicName" type="string" minOccurs="1" maxOccurs="1">
-        <annotation>
-          <documentation>Symbolic name of the bundle</documentation>
-        </annotation>
-      </element>
-      <element name="version" type="string" minOccurs="1" maxOccurs="1">
-        <annotation>
-          <documentation>Version of the bundle</documentation>
-        </annotation>
-      </element>
-      <element name="location" type="string" minOccurs="1" maxOccurs="1">
+      <element name="property" type="tns:EntryType" minOccurs="0" maxOccurs="unbounded">
         <annotation>
           <documentation>The file URI that can be used to update/install the bundle. It might start
             with
@@ -174,25 +159,8 @@
         </annotation>
       </element>
     </sequence>
-    <attribute name="action" type="tns:OSGiActionType" use="required">
-      <annotation>
-        <documentation>An action that should be done with the bundle</documentation>
-      </annotation>
-    </attribute>
-    <attribute name="startLevel" type="int" use="optional">
-      <annotation>
-        <documentation>Start level of the bundle (optional)</documentation>
-      </annotation>
-    </attribute>
   </complexType>
 
-  <simpleType name="OSGiActionType">
-    <restriction base="string">
-      <enumeration value="none"></enumeration>
-      <enumeration value="install"></enumeration>
-      <enumeration value="start"></enumeration>
-    </restriction>
-  </simpleType>
 
 
 

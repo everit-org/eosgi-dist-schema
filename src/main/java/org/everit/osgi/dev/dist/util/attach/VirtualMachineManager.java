@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.everit.osgi.dev.dist.util.attach;
 
 import java.util.List;
@@ -22,6 +23,9 @@ import com.sun.tools.attach.VirtualMachineDescriptor;
 
 public class VirtualMachineManager {
 
+  /**
+   * Lists all of the virtual machines on the localhost.
+   */
   public void listVirtualMachines() {
     List<VirtualMachineDescriptor> virtualMachines = VirtualMachine.list();
     for (VirtualMachineDescriptor virtualMachineDescriptor : virtualMachines) {

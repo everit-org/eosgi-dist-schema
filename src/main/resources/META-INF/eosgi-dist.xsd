@@ -76,7 +76,10 @@
       <documentation>A maven artifact with additional information.</documentation>
     </annotation>
     <sequence>
-            <element name="id" type="string"></element>
+            <element name="gav" type="string">
+              <annotation>
+                <documentation>The artifact coordinates in the format &lt;groupId&gt;:&lt;artifactId&gt;[:&lt;extension&gt;[:&lt;classifier&gt;]]:&lt;version&gt;. Must not be null.</documentation>
+              </annotation></element>
             <element name="properties" type="tns:PropertiesType" minOccurs="0" maxOccurs="1">
         <annotation>
           <documentation>In case this is an OSGi bundle, additional behavior can be defined.</documentation>

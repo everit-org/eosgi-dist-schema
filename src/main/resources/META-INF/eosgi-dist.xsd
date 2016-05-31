@@ -76,7 +76,7 @@
       <documentation>A maven artifact with additional information.</documentation>
     </annotation>
     <sequence>
-            <element name="gav" type="string">
+            <element name="coordinates" type="string" minOccurs="1" maxOccurs="1">
               <annotation>
                 <documentation>The artifact coordinates in the format &lt;groupId&gt;:&lt;artifactId&gt;[:&lt;extension&gt;[:&lt;classifier&gt;]]:&lt;version&gt;. Must not be null.</documentation>
               </annotation></element>

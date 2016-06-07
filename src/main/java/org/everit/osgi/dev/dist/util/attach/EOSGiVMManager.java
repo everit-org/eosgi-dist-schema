@@ -33,12 +33,17 @@ import com.sun.tools.attach.AttachNotSupportedException;
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
 
-public class VirtualMachineManager {
+/**
+ * Tracks virtual machines that run EOSGi environment.
+ */
+public class EOSGiVMManager {
 
   private final Map<String, Set<EnvironmentRuntimeInfo>> environmentInfosByEnvironmentId =
       new HashMap<>();
 
-  public VirtualMachineManager() {
+  private Set<String> processedVMIds = new HashSet<>();
+
+  public EOSGiVMManager() {
     refresh();
   }
 
@@ -79,14 +84,6 @@ public class VirtualMachineManager {
     return false;
   }
 
-  private void loadMangementAgent(final VirtualMachine virtualMachine,
-      final Properties systemProperties)
-      throws AgentLoadException, AgentInitializationException, IOException {
-    String javaHome = systemProperties.getProperty("java.home");
-    String agent = javaHome + File.separator + "lib" + File.separator + "management-agent.jar";
-    virtualMachine.loadAgent(agent);
-  }
-
   private void processVirtualMachine(final VirtualMachine virtualMachine)
       throws IOException, AgentLoadException, AgentInitializationException {
 
@@ -97,14 +94,7 @@ public class VirtualMachineManager {
       return;
     }
 
-    String jmxURL =
-        readAgentProperty(virtualMachine, "com.sun.management.jmxremote.localConnectorAddress");
-
-    if (jmxURL == null) {
-      loadMangementAgent(virtualMachine, systemProperties);
-      jmxURL =
-          readAgentProperty(virtualMachine, "com.sun.management.jmxremote.localConnectorAddress");
-    }
+    String jmxURL = virtualMachine.startLocalManagementAgent();
 
     if (jmxURL == null) {
       return;
@@ -126,33 +116,34 @@ public class VirtualMachineManager {
     environmentInfos.add(environmentRuntimeInfo);
   }
 
-  private String readAgentProperty(final VirtualMachine virtualMachine, final String propertyName)
-      throws IOException {
-    String propertyValue = null;
-    Properties agentProperties = virtualMachine.getAgentProperties();
-    propertyValue = agentProperties.getProperty(propertyName);
-    return propertyValue;
-  }
-
+  /**
+   * Refreshes the information of EOSGi Environment VMs.
+   */
   public synchronized void refresh() {
     environmentInfosByEnvironmentId.clear();
+    Set<String> aliveVMIds = new HashSet<>();
     List<VirtualMachineDescriptor> virtualMachines = VirtualMachine.list();
     for (VirtualMachineDescriptor virtualMachineDescriptor : virtualMachines) {
-      try {
-        VirtualMachine virtualMachine = VirtualMachine.attach(virtualMachineDescriptor);
+      String vmId = virtualMachineDescriptor.id();
+      aliveVMIds.add(vmId);
+      if (!processedVMIds.contains(vmId)) {
         try {
-          processVirtualMachine(virtualMachine);
-        } finally {
-          virtualMachine.detach();
-        }
+          VirtualMachine virtualMachine = VirtualMachine.attach(virtualMachineDescriptor);
+          try {
+            processVirtualMachine(virtualMachine);
+          } finally {
+            virtualMachine.detach();
+          }
 
-      } catch (AttachNotSupportedException | IOException | AgentInitializationException
-          | AgentLoadException e) {
-        throw new RuntimeException(
-            "Error during communicating to JVM to check if it is an OSGi environment: "
-                + virtualMachineDescriptor.id() + " - " + virtualMachineDescriptor.displayName(),
-            e);
+        } catch (AttachNotSupportedException | IOException | AgentInitializationException
+            | AgentLoadException e) {
+          throw new RuntimeException(
+              "Error during communicating to JVM to check if it is an OSGi environment: "
+                  + vmId + " - " + virtualMachineDescriptor.displayName(),
+              e);
+        }
       }
     }
+    processedVMIds = aliveVMIds;
   }
 }

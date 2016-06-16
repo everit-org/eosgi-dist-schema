@@ -29,7 +29,7 @@
 
   <groupId>org.everit.osgi.dev</groupId>
   <artifactId>org.everit.osgi.dev.dist.util</artifactId>
-  <version>4.0.0-20160610752</version>
+  <version>4.0.0-201606140049</version>
 
   <packaging>bundle</packaging>
 
@@ -92,6 +92,7 @@
               org.everit.osgi.dev.dist.util.configuration,
               org.everit.osgi.dev.dist.util.configuration.schema
             </Export-Package>
+            <Embed-Dependency>org.everit.jdk.javaagent.shutdown</Embed-Dependency>
           </instructions>
         </configuration>
       </plugin>
@@ -130,6 +131,11 @@
       <version>1.4.2</version>
       <scope>system</scope>
       <systemPath>${java.home}/../lib/tools.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>org.everit.jdk.javaagent</groupId>
+      <artifactId>org.everit.jdk.javaagent.shutdown</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

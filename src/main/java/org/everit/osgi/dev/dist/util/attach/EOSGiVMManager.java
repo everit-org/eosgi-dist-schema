@@ -16,8 +16,13 @@
 
 package org.everit.osgi.dev.dist.util.attach;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,15 +41,26 @@ import com.sun.tools.attach.VirtualMachineDescriptor;
 /**
  * Tracks virtual machines that run EOSGi environment.
  */
-public class EOSGiVMManager {
+public class EOSGiVMManager implements Closeable {
+
+  private static final int BUFFER_SIZE = 1024;
 
   private final Map<String, Set<EnvironmentRuntimeInfo>> environmentInfosByEnvironmentId =
       new HashMap<>();
 
   private Set<String> processedVMIds = new HashSet<>();
 
+  private File shutdownAgentFile = null;
+
   public EOSGiVMManager() {
     refresh();
+  }
+
+  @Override
+  public synchronized void close() {
+    if (this.shutdownAgentFile != null) {
+      shutdownAgentFile.delete();
+    }
   }
 
   /**
@@ -71,6 +87,33 @@ public class EOSGiVMManager {
       }
     }
     return result;
+  }
+
+  private String getShutdownAgentPath() {
+    if (shutdownAgentFile != null) {
+      return shutdownAgentFile.getAbsolutePath();
+    }
+
+    try {
+      this.shutdownAgentFile = File.createTempFile("eosgi-shutdownJavaAgent", null);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+    try (InputStream is =
+        EOSGiVMManager.class.getResourceAsStream("/org.everit.jdk.javaagent.shutdown-1.0.0.jar");
+        OutputStream out = new FileOutputStream(this.shutdownAgentFile)) {
+
+      byte[] buffer = new byte[BUFFER_SIZE];
+      int r = is.read(buffer);
+      while (r >= 0) {
+        out.write(buffer, 0, r);
+        r = is.read(buffer);
+      }
+      return this.shutdownAgentFile.getAbsolutePath();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   private boolean isParentOrSameDir(final File environmentRootDir, final File userDir) {
@@ -145,5 +188,25 @@ public class EOSGiVMManager {
       }
     }
     processedVMIds = aliveVMIds;
+  }
+
+  /**
+   * Shuts down a Java {@link VirtualMachine}.
+   *
+   * @param virtualMachineId
+   *          The id of the virtual machine.
+   * @param timeout
+   *          The timeout after the virtual machine is shut down forcibly.
+   */
+  public synchronized void shutDownVirtualMachine(final String virtualMachineId,
+      final long timeout) {
+    try {
+      VirtualMachine virtualMachine = VirtualMachine.attach(virtualMachineId);
+      virtualMachine.loadAgent(getShutdownAgentPath(), "timeout=" + timeout);
+    } catch (AttachNotSupportedException | IOException | AgentLoadException
+        | AgentInitializationException e) {
+
+      throw new RuntimeException("Cannot shut down vm: " + virtualMachineId, e);
+    }
   }
 }

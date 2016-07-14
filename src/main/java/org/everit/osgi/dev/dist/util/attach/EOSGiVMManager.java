@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,12 +46,20 @@ public class EOSGiVMManager implements Closeable {
 
   private static final int BUFFER_SIZE = 1024;
 
+  private boolean closed = false;
+
+  private final Map<String, String> environmentIdByVmId = new HashMap<>();
+
   private final Map<String, Set<EnvironmentRuntimeInfo>> environmentInfosByEnvironmentId =
       new HashMap<>();
+
+  private final Map<String, String> launchIdByVmId = new HashMap<>();
 
   private Set<String> processedVMIds = new HashSet<>();
 
   private File shutdownAgentFile = null;
+
+  private final Map<String, String> vmIdByLaunchId = new HashMap<>();
 
   public EOSGiVMManager() {
     refresh();
@@ -61,6 +70,12 @@ public class EOSGiVMManager implements Closeable {
     if (this.shutdownAgentFile != null) {
       shutdownAgentFile.delete();
     }
+    launchIdByVmId.clear();
+    processedVMIds.clear();
+    environmentInfosByEnvironmentId.clear();
+    environmentIdByVmId.clear();
+    vmIdByLaunchId.clear();
+    closed = true;
   }
 
   /**
@@ -74,6 +89,9 @@ public class EOSGiVMManager implements Closeable {
    */
   public synchronized Set<EnvironmentRuntimeInfo> getRuntimeInformations(final String environmentId,
       final File environmentRootDir) {
+    if (closed) {
+      return Collections.emptySet();
+    }
     Set<EnvironmentRuntimeInfo> result = new HashSet<>();
     Set<EnvironmentRuntimeInfo> environmentInfos =
         environmentInfosByEnvironmentId.get(environmentId);
@@ -116,6 +134,10 @@ public class EOSGiVMManager implements Closeable {
     }
   }
 
+  public synchronized String getVirtualMachineIdByIUniqueLaunchId(final String uniqueLaunchId) {
+    return vmIdByLaunchId.get(uniqueLaunchId);
+  }
+
   private boolean isParentOrSameDir(final File environmentRootDir, final File userDir) {
     File currentDir = userDir;
     while (currentDir != null) {
@@ -131,6 +153,13 @@ public class EOSGiVMManager implements Closeable {
       throws IOException, AgentLoadException, AgentInitializationException {
 
     Properties systemProperties = virtualMachine.getSystemProperties();
+
+    String launchUniqueId = systemProperties.getProperty(DistConstants.SYSPROP_LAUNCH_UNIQUE_ID);
+    String vmId = virtualMachine.id();
+    if (launchUniqueId != null) {
+      vmIdByLaunchId.put(launchUniqueId, vmId);
+      launchIdByVmId.put(vmId, launchUniqueId);
+    }
 
     String environmentId = systemProperties.getProperty(DistConstants.SYSPROP_ENVIRONMENT_ID);
     if (environmentId == null) {
@@ -148,13 +177,14 @@ public class EOSGiVMManager implements Closeable {
     EnvironmentRuntimeInfo environmentRuntimeInfo = new EnvironmentRuntimeInfo();
     environmentRuntimeInfo.jmxServiceURL = jmxURL;
     environmentRuntimeInfo.userDir = new File(userDir);
-    environmentRuntimeInfo.virtualMachineId = virtualMachine.id();
+    environmentRuntimeInfo.virtualMachineId = vmId;
 
     Set<EnvironmentRuntimeInfo> environmentInfos =
         environmentInfosByEnvironmentId.get(environmentId);
     if (environmentInfos == null) {
       environmentInfos = new HashSet<>();
       environmentInfosByEnvironmentId.put(environmentId, environmentInfos);
+      environmentIdByVmId.put(vmId, environmentId);
     }
     environmentInfos.add(environmentRuntimeInfo);
   }
@@ -163,7 +193,9 @@ public class EOSGiVMManager implements Closeable {
    * Refreshes the information of EOSGi Environment VMs.
    */
   public synchronized void refresh() {
-    environmentInfosByEnvironmentId.clear();
+    if (closed) {
+      return;
+    }
     Set<String> aliveVMIds = new HashSet<>();
     List<VirtualMachineDescriptor> virtualMachines = VirtualMachine.list();
     for (VirtualMachineDescriptor virtualMachineDescriptor : virtualMachines) {
@@ -187,7 +219,24 @@ public class EOSGiVMManager implements Closeable {
         }
       }
     }
+    removeDeadVms(aliveVMIds);
     processedVMIds = aliveVMIds;
+  }
+
+  private void removeDeadVms(final Set<String> aliveVMIds) {
+    for (String vmId : processedVMIds) {
+      if (!aliveVMIds.contains(vmId)) {
+        String launchId = launchIdByVmId.remove(vmId);
+        if (launchId != null) {
+          vmIdByLaunchId.remove(launchId);
+        }
+
+        String environmentId = environmentIdByVmId.remove(vmId);
+        if (environmentId != null) {
+          environmentInfosByEnvironmentId.remove(environmentId);
+        }
+      }
+    }
   }
 
   /**
@@ -199,10 +248,18 @@ public class EOSGiVMManager implements Closeable {
    *          The timeout after the virtual machine is shut down forcibly.
    */
   public synchronized void shutDownVirtualMachine(final String virtualMachineId,
-      final long timeout) {
+      final Long timeout) {
+    if (closed) {
+      return;
+    }
+
     try {
       VirtualMachine virtualMachine = VirtualMachine.attach(virtualMachineId);
-      virtualMachine.loadAgent(getShutdownAgentPath(), "timeout=" + timeout);
+      if (timeout == null) {
+        virtualMachine.loadAgent(getShutdownAgentPath());
+      } else {
+        virtualMachine.loadAgent(getShutdownAgentPath(), "timeout=" + timeout);
+      }
     } catch (AttachNotSupportedException | IOException | AgentLoadException
         | AgentInitializationException e) {
 

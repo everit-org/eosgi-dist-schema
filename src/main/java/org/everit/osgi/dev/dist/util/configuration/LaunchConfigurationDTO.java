@@ -15,21 +15,20 @@
  */
 package org.everit.osgi.dev.dist.util.configuration;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
- * The unmodifiable arguments that can be used to launch an environment.
+ * Arguments that can be used to launch an environment.
  */
 public class LaunchConfigurationDTO {
 
-  public final String classpath;
+  public String classpath;
 
-  public final String mainClass;
+  public String mainClass;
 
-  public final List<String> programArguments;
+  public List<String> programArguments;
 
-  public final List<String> vmArguments;
+  public List<String> vmArguments;
 
   /**
    * Constructor.
@@ -49,8 +48,8 @@ public class LaunchConfigurationDTO {
     super();
     this.mainClass = mainClass;
     this.classpath = classpath;
-    this.vmArguments = Collections.unmodifiableList(vmArguments);
-    this.programArguments = Collections.unmodifiableList(programArguments);
+    this.vmArguments = vmArguments;
+    this.programArguments = programArguments;
   }
 
   /**
@@ -91,22 +90,7 @@ public class LaunchConfigurationDTO {
   }
 
   private boolean isVmArgumentsChanged(final LaunchConfigurationDTO existingConfig) {
-
-    if (existingConfig.vmArguments.size() != vmArguments.size()) {
-      return true;
-    }
-
-    for (int i = 0; i < existingConfig.vmArguments.size(); i++) {
-      String existingVmArg = existingConfig.vmArguments.get(i);
-      String newVmArg = vmArguments.get(i);
-      if (!existingVmArg.equals(newVmArg)
-          && !existingVmArg.contains("jacoco")
-          && !newVmArg.contains("jacoco")) {
-        return true;
-      }
-    }
-
-    return false;
+    return !existingConfig.vmArguments.equals(vmArguments);
   }
 
 }

@@ -48,14 +48,11 @@ public class DistributedEnvironmentConfigurationProvider {
     }
   };
 
-  private final JAXBContext jaxbContext;
+  private static final JAXBContext JAXB_CONTEXT;
 
-  /**
-   * Constructor.
-   */
-  public DistributedEnvironmentConfigurationProvider() {
+  static {
     try {
-      jaxbContext = JAXBContext.newInstance(
+      JAXB_CONTEXT = JAXBContext.newInstance(
           ObjectFactory.class.getPackage().getName(),
           ObjectFactory.class.getClassLoader());
     } catch (JAXBException e) {
@@ -240,7 +237,7 @@ public class DistributedEnvironmentConfigurationProvider {
     }
 
     try {
-      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+      Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
       Object distributionPackage = unmarshaller.unmarshal(distConfigFile);
       if (distributionPackage instanceof JAXBElement) {
 

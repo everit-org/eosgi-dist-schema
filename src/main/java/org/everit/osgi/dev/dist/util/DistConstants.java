@@ -20,10 +20,14 @@ package org.everit.osgi.dev.dist.util;
  */
 public final class DistConstants {
 
+  public static final String PLUGIN_PROPERTY_DIST_ONLY = "eosgi.distOnly";
+
   /**
    * Additional system property that is applied to each environment automatically.
    */
   public static final String SYSPROP_ENVIRONMENT_ID = "org.everit.osgi.dev.environmentId";
+
+  public static final String SYSPROP_LAUNCH_UNIQUE_ID = "org.everit.osgi.dev.launcUniqueId";
 
   private DistConstants() {
   }

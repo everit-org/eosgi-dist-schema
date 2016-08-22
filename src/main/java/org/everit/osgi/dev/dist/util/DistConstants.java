@@ -20,6 +20,10 @@ package org.everit.osgi.dev.dist.util;
  */
 public final class DistConstants {
 
+  public static final String DEFAULT_ENVIRONMENT_ID = "equinox";
+
+  public static final int DEFAULT_SHUTDOWN_TIMEOUT = 30000;
+
   public static final String PLUGIN_PROPERTY_DIST_ONLY = "eosgi.distOnly";
 
   /**

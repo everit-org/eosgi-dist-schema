@@ -32,12 +32,9 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.everit.osgi.dev.dist.util.DistConstants;
-
-import com.sun.tools.attach.AgentInitializationException;
-import com.sun.tools.attach.AgentLoadException;
-import com.sun.tools.attach.AttachNotSupportedException;
-import com.sun.tools.attach.VirtualMachine;
-import com.sun.tools.attach.VirtualMachineDescriptor;
+import org.everit.osgi.dev.dist.util.attach.internal.reflect.VirtualMachineDescriptorReflect;
+import org.everit.osgi.dev.dist.util.attach.internal.reflect.VirtualMachineReflect;
+import org.everit.osgi.dev.dist.util.attach.internal.reflect.VirtualMachineStaticReflect;
 
 /**
  * Tracks virtual machines that run EOSGi environment.
@@ -59,9 +56,21 @@ public class EOSGiVMManager implements Closeable {
 
   private File shutdownAgentFile = null;
 
+  private final VirtualMachineStaticReflect virtualMachineStatic;
+
   private final Map<String, String> vmIdByLaunchId = new HashMap<>();
 
-  public EOSGiVMManager() {
+  /**
+   * Constructor.
+   * 
+   * @param attachAPIClassLoader
+   *          The classloader that will be used to access attach API. This is necessary as maven
+   *          replaces the classloaders with plugin-specific ones and the attach API classes are not
+   *          the same types as the ones that are accessed within the eclipse plugin.
+   */
+  public EOSGiVMManager(final ClassLoader attachAPIClassLoader) {
+    virtualMachineStatic = new VirtualMachineStaticReflect(attachAPIClassLoader);
+
     refresh();
   }
 
@@ -149,8 +158,7 @@ public class EOSGiVMManager implements Closeable {
     return false;
   }
 
-  private void processVirtualMachine(final VirtualMachine virtualMachine)
-      throws IOException, AgentLoadException, AgentInitializationException {
+  private void processVirtualMachine(final VirtualMachineReflect virtualMachine) {
 
     Properties systemProperties = virtualMachine.getSystemProperties();
 
@@ -197,26 +205,16 @@ public class EOSGiVMManager implements Closeable {
       return;
     }
     Set<String> aliveVMIds = new HashSet<>();
-    List<VirtualMachineDescriptor> virtualMachines = VirtualMachine.list();
-    for (VirtualMachineDescriptor virtualMachineDescriptor : virtualMachines) {
+    List<VirtualMachineDescriptorReflect> virtualMachines = virtualMachineStatic.list();
+    for (VirtualMachineDescriptorReflect virtualMachineDescriptor : virtualMachines) {
       String vmId = virtualMachineDescriptor.id();
       aliveVMIds.add(vmId);
       if (!processedVMIds.contains(vmId)) {
-        try {
-          VirtualMachine virtualMachine = VirtualMachine.attach(virtualMachineDescriptor);
-          try {
-            processVirtualMachine(virtualMachine);
-          } finally {
-            virtualMachine.detach();
-          }
-
-        } catch (AttachNotSupportedException | IOException | AgentInitializationException
-            | AgentLoadException e) {
-          throw new RuntimeException(
-              "Error during communicating to JVM to check if it is an OSGi environment: "
-                  + vmId + " - " + virtualMachineDescriptor.displayName(),
-              e);
+        try (VirtualMachineReflect virtualMachine =
+            virtualMachineStatic.attach(virtualMachineDescriptor)) {
+          processVirtualMachine(virtualMachine);
         }
+
       }
     }
     removeDeadVms(aliveVMIds);
@@ -253,17 +251,12 @@ public class EOSGiVMManager implements Closeable {
       return;
     }
 
-    try {
-      VirtualMachine virtualMachine = VirtualMachine.attach(virtualMachineId);
+    try (VirtualMachineReflect virtualMachine = virtualMachineStatic.attach(virtualMachineId)) {
       if (timeout == null) {
         virtualMachine.loadAgent(getShutdownAgentPath());
       } else {
         virtualMachine.loadAgent(getShutdownAgentPath(), "timeout=" + timeout);
       }
-    } catch (AttachNotSupportedException | IOException | AgentLoadException
-        | AgentInitializationException e) {
-
-      throw new RuntimeException("Cannot shut down vm: " + virtualMachineId, e);
     }
   }
 }

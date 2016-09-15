@@ -24,6 +24,13 @@ public final class DistConstants {
 
   public static final int DEFAULT_SHUTDOWN_TIMEOUT = 30000;
 
+  /**
+   * Key that can be used to pass a classloader to the dist plugin that can load the Sun Attach API
+   * via the data map of the execution request.
+   */
+  public static final String MAVEN_EXECUTION_REQUEST_DATA_KEY_ATTACH_API_CLASSLOADER =
+      "org.everit.osgi.dev.attachAPIClassLoader";
+
   public static final String PLUGIN_PROPERTY_DIST_ONLY = "eosgi.distOnly";
 
   /**

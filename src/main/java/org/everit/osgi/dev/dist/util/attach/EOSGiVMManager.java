@@ -26,6 +26,7 @@ import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -192,9 +193,9 @@ public class EOSGiVMManager implements Closeable {
     if (environmentInfos == null) {
       environmentInfos = new HashSet<>();
       environmentInfosByEnvironmentId.put(environmentId, environmentInfos);
-      environmentIdByVmId.put(vmId, environmentId);
     }
     environmentInfos.add(environmentRuntimeInfo);
+    environmentIdByVmId.put(vmId, environmentId);
   }
 
   /**
@@ -231,7 +232,20 @@ public class EOSGiVMManager implements Closeable {
 
         String environmentId = environmentIdByVmId.remove(vmId);
         if (environmentId != null) {
-          environmentInfosByEnvironmentId.remove(environmentId);
+
+          Set<EnvironmentRuntimeInfo> runtimeInfos =
+              environmentInfosByEnvironmentId.get(environmentId);
+
+          Iterator<EnvironmentRuntimeInfo> iterator = runtimeInfos.iterator();
+          while (iterator.hasNext()) {
+            EnvironmentRuntimeInfo environmentRuntimeInfo = iterator.next();
+            if (environmentRuntimeInfo.virtualMachineId.equals(vmId)) {
+              iterator.remove();
+            }
+          }
+          if (runtimeInfos.isEmpty()) {
+            environmentInfosByEnvironmentId.remove(environmentId);
+          }
         }
       }
     }

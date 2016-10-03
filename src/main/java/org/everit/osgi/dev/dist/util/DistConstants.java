@@ -33,6 +33,8 @@ public final class DistConstants {
 
   public static final String PLUGIN_PROPERTY_DIST_ONLY = "eosgi.distOnly";
 
+  public static final String PLUGIN_PROPERTY_ENVIRONMENT_ID = "eosgi.environmentId";
+
   /**
    * Additional system property that is applied to each environment automatically.
    */

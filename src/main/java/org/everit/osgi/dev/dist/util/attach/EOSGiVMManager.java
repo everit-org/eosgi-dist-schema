@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,6 +58,8 @@ public class EOSGiVMManager implements Closeable {
 
   private File shutdownAgentFile = null;
 
+  private final List<Runnable> stateChangeListeners = new ArrayList<>();
+
   private final VirtualMachineStaticReflect virtualMachineStatic;
 
   private final Map<String, String> vmIdByLaunchId = new HashMap<>();
@@ -73,6 +76,10 @@ public class EOSGiVMManager implements Closeable {
     virtualMachineStatic = new VirtualMachineStaticReflect(attachAPIClassLoader);
 
     refresh();
+  }
+
+  public synchronized void addStateChangeListener(final Runnable listener) {
+    stateChangeListeners.add(listener);
   }
 
   @Override
@@ -219,6 +226,12 @@ public class EOSGiVMManager implements Closeable {
       }
     }
     removeDeadVms(aliveVMIds);
+
+    if (!processedVMIds.equals(aliveVMIds)) {
+      for (Runnable listener : stateChangeListeners) {
+        listener.run();
+      }
+    }
     processedVMIds = aliveVMIds;
   }
 
@@ -249,6 +262,10 @@ public class EOSGiVMManager implements Closeable {
         }
       }
     }
+  }
+
+  public synchronized void removeStateChangeListener(final Runnable listener) {
+    stateChangeListeners.remove(listener);
   }
 
   /**

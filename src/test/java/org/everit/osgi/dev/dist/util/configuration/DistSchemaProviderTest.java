@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.everit.osgi.dev.dist.util.DistConstants;
 import org.everit.osgi.dev.dist.util.configuration.schema.ArgumentsType;
 import org.everit.osgi.dev.dist.util.configuration.schema.ArtifactsType;
 import org.everit.osgi.dev.dist.util.configuration.schema.EntryType;
@@ -73,7 +74,7 @@ public class DistSchemaProviderTest {
 
     Assert.assertNotNull(actual);
 
-    Set<String> processedKeys = new HashSet<String>();
+    Set<String> processedKeys = new HashSet<>();
 
     for (Entry<String, String> e : expected.entrySet()) {
 
@@ -92,7 +93,7 @@ public class DistSchemaProviderTest {
       processedKeys.add(expectedKey);
     }
 
-    Map<String, String> actualClone = new HashMap<String, String>(actual);
+    Map<String, String> actualClone = new HashMap<>(actual);
     for (String processedKey : processedKeys) {
       actualClone.remove(processedKey);
     }
@@ -175,7 +176,7 @@ public class DistSchemaProviderTest {
       Assert.fail("the last key defined without value");
     }
 
-    Map<String, String> rval = new HashMap<String, String>();
+    Map<String, String> rval = new HashMap<>();
 
     for (int i = 0; i < keyValuePairs.length; i = i + 2) {
       rval.put(keyValuePairs[i], keyValuePairs[i + 1]);
@@ -194,17 +195,17 @@ public class DistSchemaProviderTest {
   @Test
   public void testGetEnvironmentConfiguration() throws URISyntaxException {
 
-    File distFolderFile = getDistFolderFile();
+    File distConfigFile = new File(getDistFolderFile(), DistConstants.FILE_NAME_EOSGI_DIST_CONFIG);
 
     EnvironmentType ideDistributionPackage =
-        distSchemaProvider.getOverriddenDistributedEnvironmentConfig(distFolderFile, UseByType.IDE);
+        distSchemaProvider.getOverriddenDistributedEnvironmentConfig(distConfigFile, UseByType.IDE);
 
     LaunchConfigurationDTO ideConf = distSchemaProvider
         .getLaunchConfiguration(ideDistributionPackage);
     Assert.assertNotNull(ideConf);
 
     EnvironmentType integrationTestDistributionPackage =
-        distSchemaProvider.getOverriddenDistributedEnvironmentConfig(distFolderFile,
+        distSchemaProvider.getOverriddenDistributedEnvironmentConfig(distConfigFile,
             UseByType.INTEGRATION_TEST);
 
     LaunchConfigurationDTO testConf = distSchemaProvider
@@ -212,7 +213,7 @@ public class DistSchemaProviderTest {
     Assert.assertNotNull(testConf);
 
     EnvironmentType parsablesDistributionPackage =
-        distSchemaProvider.getOverriddenDistributedEnvironmentConfig(distFolderFile,
+        distSchemaProvider.getOverriddenDistributedEnvironmentConfig(distConfigFile,
             UseByType.PARSABLES);
 
     LaunchConfigurationDTO parsablesConf = distSchemaProvider
@@ -265,20 +266,20 @@ public class DistSchemaProviderTest {
   @Test
   public void testGetOverridedDistributionPackage() throws URISyntaxException {
 
-    File distFolderFile = getDistFolderFile();
+    File distConfigFile = new File(getDistFolderFile(), DistConstants.FILE_NAME_EOSGI_DIST_CONFIG);
 
     EnvironmentType distIde = distSchemaProvider
-        .getOverriddenDistributedEnvironmentConfig(distFolderFile, UseByType.IDE);
+        .getOverriddenDistributedEnvironmentConfig(distConfigFile, UseByType.IDE);
 
     Assert.assertNotNull(distIde);
 
     EnvironmentType distTest = distSchemaProvider
-        .getOverriddenDistributedEnvironmentConfig(distFolderFile, UseByType.INTEGRATION_TEST);
+        .getOverriddenDistributedEnvironmentConfig(distConfigFile, UseByType.INTEGRATION_TEST);
 
     Assert.assertNotNull(distTest);
 
     EnvironmentType distParsables = distSchemaProvider
-        .getOverriddenDistributedEnvironmentConfig(distFolderFile, UseByType.PARSABLES);
+        .getOverriddenDistributedEnvironmentConfig(distConfigFile, UseByType.PARSABLES);
 
     Assert.assertNotNull(distParsables);
 
@@ -325,7 +326,7 @@ public class DistSchemaProviderTest {
   }
 
   private Map<String, String> toMap(final List<EntryType> entries) {
-    Map<String, String> rval = new HashMap<String, String>();
+    Map<String, String> rval = new HashMap<>();
     for (EntryType entry : entries) {
       String key = entry.getKey();
       String value = entry.getValue();

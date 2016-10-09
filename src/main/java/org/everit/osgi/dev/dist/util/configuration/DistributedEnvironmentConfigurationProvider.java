@@ -80,7 +80,7 @@ public class DistributedEnvironmentConfigurationProvider {
     String mainClass = launchConfig.getMainClass();
     String classpath = launchConfig.getClassPath();
 
-    List<String> vmArguments = new ArrayList<String>();
+    List<String> vmArguments = new ArrayList<>();
     ArgumentsType vmArgumentsType = launchConfig.getVmArguments();
     if (vmArgumentsType != null) {
       List<EntryType> vmArgumentNodes = vmArgumentsType.getArgument();
@@ -90,7 +90,7 @@ public class DistributedEnvironmentConfigurationProvider {
       }
     }
 
-    List<String> programArguments = new ArrayList<String>();
+    List<String> programArguments = new ArrayList<>();
     ArgumentsType programArgumentsType = launchConfig.getProgramArguments();
     if (programArgumentsType != null) {
       List<EntryType> programArgumentNodes = programArgumentsType.getArgument();
@@ -108,16 +108,16 @@ public class DistributedEnvironmentConfigurationProvider {
    * is processed based on the given useBy argument. This means that the returned objects
    * {@link LaunchConfigType#getOverrides()} will return <code>null</code>.
    *
-   * @param distFolderFile
+   * @param distConfigFile
    *          the file of the eosgi.dist.xml
    * @param useBy
    *          the type of the usage
    * @return the distribution package
    */
   public EnvironmentType getOverriddenDistributedEnvironmentConfig(
-      final File distFolderFile, final UseByType useBy) {
+      final File distConfigFile, final UseByType useBy) {
 
-    EnvironmentType distributionPackageType = readDistConfig(distFolderFile);
+    EnvironmentType distributionPackageType = readDistConfig(distConfigFile);
 
     if (distributionPackageType == null) {
       return null;
@@ -229,9 +229,7 @@ public class DistributedEnvironmentConfigurationProvider {
   /**
    * Returns the original distribution package read from the eosgi.dist.xml.
    */
-  private EnvironmentType readDistConfig(final File distFolderFile) {
-
-    File distConfigFile = new File(distFolderFile, "/.eosgi.dist.xml");
+  private EnvironmentType readDistConfig(final File distConfigFile) {
     if (!distConfigFile.exists()) {
       return null;
     }

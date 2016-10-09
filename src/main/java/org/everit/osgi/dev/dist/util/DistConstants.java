@@ -20,9 +20,13 @@ package org.everit.osgi.dev.dist.util;
  */
 public final class DistConstants {
 
+  public static final String DEFAULT_ENVIRONMENT_FRAMEWORK = "equinox";
+
   public static final String DEFAULT_ENVIRONMENT_ID = "equinox";
 
   public static final int DEFAULT_SHUTDOWN_TIMEOUT = 30000;
+
+  public static final String FILE_NAME_EOSGI_DIST_CONFIG = ".eosgi.dist.xml";
 
   /**
    * Key that can be used to pass a classloader to the dist plugin that can load the Sun Attach API

@@ -273,20 +273,24 @@ public class EOSGiVMManager implements Closeable {
    *
    * @param virtualMachineId
    *          The id of the virtual machine.
-   * @param timeout
-   *          The timeout after the virtual machine is shut down forcibly.
+   * @param exitcode
+   *          The exit code that the application should return after a normal shutdown.
+   * @param forcedShutdownParameter
+   *          Parameter that tells why and how forced shutdown should be applied or
+   *          <code>null</code> if no forced shutdown should be done.
    */
-  public synchronized void shutDownVirtualMachine(final String virtualMachineId,
-      final Long timeout) {
+  public synchronized void shutDownVirtualMachine(final String virtualMachineId, final int exitcode,
+      final ForcedShutdownParameter forcedShutdownParameter) {
     if (closed) {
       return;
     }
 
     try (VirtualMachineReflect virtualMachine = virtualMachineStatic.attach(virtualMachineId)) {
-      if (timeout == null) {
+      if (forcedShutdownParameter == null) {
         virtualMachine.loadAgent(getShutdownAgentPath());
       } else {
-        virtualMachine.loadAgent(getShutdownAgentPath(), "timeout=" + timeout);
+        virtualMachine.loadAgent(getShutdownAgentPath(), "timeout="
+            + forcedShutdownParameter.timeout + ",haltcode=" + forcedShutdownParameter.haltCode);
       }
     }
   }

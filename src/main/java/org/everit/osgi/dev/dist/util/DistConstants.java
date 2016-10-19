@@ -44,7 +44,7 @@ public final class DistConstants {
    */
   public static final String SYSPROP_ENVIRONMENT_ID = "org.everit.osgi.dev.environmentId";
 
-  public static final String SYSPROP_LAUNCH_UNIQUE_ID = "org.everit.osgi.dev.launcUniqueId";
+  public static final String SYSPROP_LAUNCH_UNIQUE_ID = "org.everit.osgi.dev.launchUniqueId";
 
   private DistConstants() {
   }

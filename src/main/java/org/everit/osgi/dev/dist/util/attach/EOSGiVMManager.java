@@ -32,6 +32,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.everit.osgi.dev.dist.util.DistConstants;
 import org.everit.osgi.dev.dist.util.attach.internal.reflect.VirtualMachineDescriptorReflect;
@@ -45,7 +54,11 @@ public class EOSGiVMManager implements Closeable {
 
   private static final int BUFFER_SIZE = 1024;
 
+  private static final long DEFAULT_VM_CALL_TIMEOUT = 3000;
+
   private boolean closed = false;
+
+  private final Consumer<String> deadlockMessageConsumer;
 
   private final Map<String, String> environmentIdByVmId = new HashMap<>();
 
@@ -57,6 +70,8 @@ public class EOSGiVMManager implements Closeable {
   private Set<String> processedVMIds = new HashSet<>();
 
   private File shutdownAgentFile = null;
+
+  private final ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
 
   private final List<Runnable> stateChangeListeners = new ArrayList<>();
 
@@ -73,6 +88,25 @@ public class EOSGiVMManager implements Closeable {
    *          the same types as the ones that are accessed within the eclipse plugin.
    */
   public EOSGiVMManager(final ClassLoader attachAPIClassLoader) {
+    this(attachAPIClassLoader, (message) -> {
+      throw new RuntimeException(message);
+    });
+  }
+
+  /**
+   * Constructor.
+   * 
+   * @param attachAPIClassLoader
+   *          The classloader that will be used to access attach API. This is necessary as maven
+   *          replaces the classloaders with plugin-specific ones and the attach API classes are not
+   *          the same types as the ones that are accessed within the eclipse plugin.
+   * @param deadlockMessageConsumer
+   *          A consumer that accepts messages when there is a deadlock on VM call. Normally this is
+   *          logged on WARN level or an exception is thrown.
+   */
+  public EOSGiVMManager(final ClassLoader attachAPIClassLoader,
+      final Consumer<String> deadlockMessageConsumer) {
+    this.deadlockMessageConsumer = deadlockMessageConsumer;
     virtualMachineStatic = new VirtualMachineStaticReflect(attachAPIClassLoader);
 
     refresh();
@@ -82,8 +116,36 @@ public class EOSGiVMManager implements Closeable {
     stateChangeListeners.add(listener);
   }
 
+  @SuppressWarnings("deprecation")
+  private <R> R callWithTimeout(final Supplier<R> supplier, final String vmId) {
+    AtomicReference<Thread> executorThread = new AtomicReference<>();
+    Future<R> future = singleThreadExecutor.submit(() -> {
+      executorThread.set(Thread.currentThread());
+      return supplier.get();
+    });
+
+    try {
+      return future.get(DEFAULT_VM_CALL_TIMEOUT, TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      return null;
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    } catch (TimeoutException e) {
+      Thread thread = executorThread.get();
+      if (thread.isAlive()) {
+        thread.stop();
+      }
+      deadlockMessageConsumer.accept("Could not execute command on VM. This happens sometimes"
+          + " on Windows systems when the VM stops at the same time as the command is called: "
+          + vmId);
+      return null;
+    }
+  }
+
   @Override
   public synchronized void close() {
+    singleThreadExecutor.shutdown();
     if (this.shutdownAgentFile != null) {
       shutdownAgentFile.delete();
     }
@@ -167,11 +229,15 @@ public class EOSGiVMManager implements Closeable {
   }
 
   private void processVirtualMachine(final VirtualMachineReflect virtualMachine) {
+    String vmId = virtualMachine.id();
+    Properties systemProperties = callWithTimeout(() -> virtualMachine.getSystemProperties(), vmId);
 
-    Properties systemProperties = virtualMachine.getSystemProperties();
+    if (systemProperties == null) {
+      return;
+    }
 
     String launchUniqueId = systemProperties.getProperty(DistConstants.SYSPROP_LAUNCH_UNIQUE_ID);
-    String vmId = virtualMachine.id();
+
     if (launchUniqueId != null) {
       vmIdByLaunchId.put(launchUniqueId, vmId);
       launchIdByVmId.put(vmId, launchUniqueId);
@@ -286,12 +352,16 @@ public class EOSGiVMManager implements Closeable {
     }
 
     try (VirtualMachineReflect virtualMachine = virtualMachineStatic.attach(virtualMachineId)) {
-      if (forcedShutdownParameter == null) {
-        virtualMachine.loadAgent(getShutdownAgentPath());
-      } else {
-        virtualMachine.loadAgent(getShutdownAgentPath(), "timeout="
-            + forcedShutdownParameter.timeout + ",haltcode=" + forcedShutdownParameter.haltCode);
-      }
+      callWithTimeout(() -> {
+        if (forcedShutdownParameter == null) {
+          virtualMachine.loadAgent(getShutdownAgentPath());
+        } else {
+          virtualMachine.loadAgent(getShutdownAgentPath(), "timeout="
+              + forcedShutdownParameter.timeout + ",haltcode=" + forcedShutdownParameter.haltCode);
+        }
+        return null;
+      }, virtualMachine.id());
+
     }
   }
 }

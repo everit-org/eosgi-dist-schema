@@ -71,7 +71,7 @@ public class EOSGiVMManager implements Closeable {
 
   private File shutdownAgentFile = null;
 
-  private final ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+  private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
 
   private final List<Runnable> stateChangeListeners = new ArrayList<>();
 
@@ -133,9 +133,12 @@ public class EOSGiVMManager implements Closeable {
       throw new RuntimeException(e);
     } catch (TimeoutException e) {
       Thread thread = executorThread.get();
-      if (thread.isAlive()) {
+      if (thread != null && thread.isAlive()) {
         thread.stop();
       }
+      singleThreadExecutor.shutdown();
+      singleThreadExecutor = Executors.newSingleThreadExecutor();
+
       deadlockMessageConsumer.accept("Could not execute command on VM. This happens sometimes"
           + " on Windows systems when the VM stops at the same time as the command is called: "
           + vmId);
@@ -145,6 +148,7 @@ public class EOSGiVMManager implements Closeable {
 
   @Override
   public synchronized void close() {
+    closed = true;
     singleThreadExecutor.shutdown();
     if (this.shutdownAgentFile != null) {
       shutdownAgentFile.delete();
@@ -154,7 +158,6 @@ public class EOSGiVMManager implements Closeable {
     environmentInfosByEnvironmentId.clear();
     environmentIdByVmId.clear();
     vmIdByLaunchId.clear();
-    closed = true;
   }
 
   /**

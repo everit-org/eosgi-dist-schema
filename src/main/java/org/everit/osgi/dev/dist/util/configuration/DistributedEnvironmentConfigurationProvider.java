@@ -16,6 +16,9 @@
 package org.everit.osgi.dev.dist.util.configuration;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -234,9 +237,10 @@ public class DistributedEnvironmentConfigurationProvider {
       return null;
     }
 
-    try {
+    try (FileInputStream fin = new FileInputStream(distConfigFile)) {
       Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
-      Object distributionPackage = unmarshaller.unmarshal(distConfigFile);
+
+      Object distributionPackage = unmarshaller.unmarshal(fin);
       if (distributionPackage instanceof JAXBElement) {
 
         @SuppressWarnings("unchecked")
@@ -251,11 +255,16 @@ public class DistributedEnvironmentConfigurationProvider {
             "The root element in the provided distribution configuration file "
                 + "is not the expected DistributionPackage element");
       }
-    } catch (JAXBException e) {
+    } catch (
+
+    JAXBException e) {
       throw new IllegalStateException(
           "Failed to process already existing distribution configuration file: "
               + distConfigFile.getAbsolutePath(),
           e);
+    } catch (IOException e) {
+      throw new UncheckedIOException(
+          "Can't read distribution configuration file: " + distConfigFile.getAbsolutePath(), e);
     }
   }
 

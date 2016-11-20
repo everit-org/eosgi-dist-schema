@@ -244,7 +244,7 @@ public class EOSGiVMManager implements Closeable {
     Throwable cause = e;
 
     while (cause != null && !attachNotSupportedExceptionClass.isAssignableFrom(e.getClass())) {
-      cause = e.getCause();
+      cause = cause.getCause();
     }
 
     if (cause != null) {

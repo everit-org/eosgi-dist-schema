@@ -40,7 +40,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.everit.osgi.dev.dist.util.DistConstants;
@@ -61,11 +61,11 @@ public class EOSGiVMManager implements Closeable {
 
   private Class<?> attachNotSupportedExceptionClass;
 
-  private final BiConsumer<Exception, EOSGiVMManager> attachNotSupportedExceptionDuringRefreshConsumer;
+  private final Consumer<EOSGiVMManagerEventData> attachNotSupportedExceptionDuringRefreshConsumer;
 
   private boolean closed = false;
 
-  private final BiConsumer<String, EOSGiVMManager> deadlockMessageConsumer;
+  private final Consumer<EOSGiVMManagerEventData> deadlockMessageConsumer;
 
   private final Map<String, String> environmentIdByVmId = new HashMap<>();
 
@@ -97,15 +97,18 @@ public class EOSGiVMManager implements Closeable {
       throw new RuntimeException(e);
     }
 
-    this.deadlockMessageConsumer = (parameter.deadlockMessageConsumer != null)
-        ? parameter.deadlockMessageConsumer : (message, manager) -> {
-          throw new RuntimeException(message);
+    this.deadlockMessageConsumer = (parameter.deadlockEventHandler != null)
+        ? parameter.deadlockEventHandler : (eventData) -> {
+          throw new RuntimeException("Could not execute command on VM. This happens sometimes"
+              + " on Windows systems when the VM stops at the same time as the command is called: "
+              + eventData.virtualMachineId);
         };
 
     this.attachNotSupportedExceptionDuringRefreshConsumer =
-        (parameter.attachNoSupportedExceptionDuringRefreshConsumer != null)
-            ? parameter.attachNoSupportedExceptionDuringRefreshConsumer : (exception, manager) -> {
-              throw new RuntimeException(exception);
+        (parameter.attachNotSupportedExceptionDuringRefreshEventHandler != null)
+            ? parameter.attachNotSupportedExceptionDuringRefreshEventHandler
+            : (eventData) -> {
+              throw new RuntimeException(eventData.cause);
             };
 
     refresh();
@@ -121,10 +124,9 @@ public class EOSGiVMManager implements Closeable {
     try {
       virtualMachine = virtualMachineStatic.attach(virtualMachineDescriptor);
     } catch (RuntimeException e) {
-      if (!handleExceptionByConsumer(e)) {
+      if (!handleExceptionByConsumer(e, virtualMachineDescriptor.id())) {
         throw e;
       }
-      processedVMIds.add(virtualMachineDescriptor.id());
       return;
     }
 
@@ -156,9 +158,10 @@ public class EOSGiVMManager implements Closeable {
       singleThreadExecutor.shutdown();
       singleThreadExecutor = Executors.newSingleThreadExecutor();
 
-      deadlockMessageConsumer.accept("Could not execute command on VM. This happens sometimes"
-          + " on Windows systems when the VM stops at the same time as the command is called: "
-          + vmId, this);
+      EOSGiVMManagerEventData eventData = new EOSGiVMManagerEventData();
+      eventData.virtualMachineId = vmId;
+      eventData.vmManager = this;
+      deadlockMessageConsumer.accept(eventData);
       return null;
     }
   }
@@ -237,7 +240,7 @@ public class EOSGiVMManager implements Closeable {
     return vmIdByLaunchId.get(uniqueLaunchId);
   }
 
-  private boolean handleExceptionByConsumer(final RuntimeException e) {
+  private boolean handleExceptionByConsumer(final RuntimeException e, final String vmId) {
     Throwable cause = e;
 
     while (cause != null && !attachNotSupportedExceptionClass.isAssignableFrom(e.getClass())) {
@@ -245,7 +248,12 @@ public class EOSGiVMManager implements Closeable {
     }
 
     if (cause != null) {
-      attachNotSupportedExceptionDuringRefreshConsumer.accept((Exception) cause, this);
+      EOSGiVMManagerEventData eventData = new EOSGiVMManagerEventData();
+      eventData.cause = cause;
+      eventData.virtualMachineId = vmId;
+      eventData.vmManager = this;
+
+      attachNotSupportedExceptionDuringRefreshConsumer.accept(eventData);
       return true;
     }
     return false;

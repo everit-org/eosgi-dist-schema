@@ -15,7 +15,7 @@
  */
 package org.everit.osgi.dev.dist.util.attach;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Execution parameters of EOSGVMManager.
@@ -25,7 +25,7 @@ public class EOSGiVMManagerParameter {
   /**
    * Consumer that is called if an AttachNotSupportedException is thrown by the VirtualMachine.
    */
-  public BiConsumer<Exception, EOSGiVMManager> attachNoSupportedExceptionDuringRefreshConsumer;
+  public Consumer<EOSGiVMManagerEventData> attachNotSupportedExceptionDuringRefreshEventHandler;
 
   /**
    * The classloader that will be used to access attach API. This is necessary as maven replaces the
@@ -38,6 +38,6 @@ public class EOSGiVMManagerParameter {
    * A consumer that accepts messages when there is a deadlock on VM call. Normally this is logged
    * on WARN level or an exception is thrown.
    */
-  public BiConsumer<String, EOSGiVMManager> deadlockMessageConsumer;
+  public Consumer<EOSGiVMManagerEventData> deadlockEventHandler;
 
 }

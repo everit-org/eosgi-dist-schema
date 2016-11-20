@@ -243,7 +243,7 @@ public class EOSGiVMManager implements Closeable {
   private boolean handleExceptionByConsumer(final RuntimeException e, final String vmId) {
     Throwable cause = e;
 
-    while (cause != null && !attachNotSupportedExceptionClass.isAssignableFrom(e.getClass())) {
+    while (cause != null && !attachNotSupportedExceptionClass.isAssignableFrom(cause.getClass())) {
       cause = cause.getCause();
     }
 

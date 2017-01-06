@@ -29,7 +29,7 @@
 
   <groupId>org.everit.osgi.dev</groupId>
   <artifactId>org.everit.osgi.dev.dist.util</artifactId>
-  <version>4.1.1</version>
+  <version>5.0.0</version>
 
   <packaging>bundle</packaging>
 
@@ -88,10 +88,10 @@
               *
             </Import-Package>
             <Export-Package>
-              org.everit.osgi.dev.dist.util,
-              org.everit.osgi.dev.dist.util.attach,
-              org.everit.osgi.dev.dist.util.configuration,
-              org.everit.osgi.dev.dist.util.configuration.schema
+              org.everit.osgi.dev.dist.util;version="4.1.0",
+              org.everit.osgi.dev.dist.util.attach;version="5.0.0",
+              org.everit.osgi.dev.dist.util.configuration;version="4.1.0",
+              org.everit.osgi.dev.dist.util.configuration.schema;version="4.1.0"
             </Export-Package>
             <Embed-Dependency>org.everit.jdk.javaagent.shutdown</Embed-Dependency>
           </instructions>

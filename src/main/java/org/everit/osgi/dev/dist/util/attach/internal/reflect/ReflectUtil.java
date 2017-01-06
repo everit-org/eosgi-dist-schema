@@ -22,8 +22,7 @@ import java.lang.reflect.Proxy;
 public final class ReflectUtil {
 
   public static <R> R callMethod(final Object obj, final String methodName,
-      final Class<?>[] parameterTypes,
-      final Object... args) {
+      final Class<?>[] parameterTypes, final Object... args) {
 
     Class<? extends Object> clazz = (obj instanceof Class<?>) ? (Class<?>) obj : obj.getClass();
     try {

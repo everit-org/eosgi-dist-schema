@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -47,6 +48,8 @@ import org.everit.osgi.dev.dist.util.attach.internal.reflect.VirtualMachineDescr
 import org.everit.osgi.dev.dist.util.attach.internal.reflect.VirtualMachineReflect;
 import org.everit.osgi.dev.dist.util.attach.internal.reflect.VirtualMachineStaticReflect;
 
+import com.sun.tools.attach.AttachNotSupportedException;
+
 /**
  * Tracks virtual machines that run EOSGi environment.
  */
@@ -56,9 +59,13 @@ public class EOSGiVMManager implements Closeable {
 
   private static final long DEFAULT_VM_CALL_TIMEOUT = 3000;
 
+  private Class<?> attachNotSupportedExceptionClass;
+
+  private final Consumer<EOSGiVMManagerEventData> attachNotSupportedExceptionDuringRefreshConsumer;
+
   private boolean closed = false;
 
-  private final Consumer<String> deadlockMessageConsumer;
+  private final Consumer<EOSGiVMManagerEventData> deadlockMessageConsumer;
 
   private final Map<String, String> environmentIdByVmId = new HashMap<>();
 
@@ -79,41 +86,53 @@ public class EOSGiVMManager implements Closeable {
 
   private final Map<String, String> vmIdByLaunchId = new HashMap<>();
 
-  /**
-   * Constructor.
-   * 
-   * @param attachAPIClassLoader
-   *          The classloader that will be used to access attach API. This is necessary as maven
-   *          replaces the classloaders with plugin-specific ones and the attach API classes are not
-   *          the same types as the ones that are accessed within the eclipse plugin.
-   */
-  public EOSGiVMManager(final ClassLoader attachAPIClassLoader) {
-    this(attachAPIClassLoader, (message) -> {
-      throw new RuntimeException(message);
-    });
-  }
+  public EOSGiVMManager(final EOSGiVMManagerParameter parameter) {
+    Objects.requireNonNull(parameter);
+    Objects.requireNonNull(parameter.classLoader);
+    this.virtualMachineStatic = new VirtualMachineStaticReflect(parameter.classLoader);
+    try {
+      attachNotSupportedExceptionClass =
+          parameter.classLoader.loadClass(AttachNotSupportedException.class.getName());
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
 
-  /**
-   * Constructor.
-   * 
-   * @param attachAPIClassLoader
-   *          The classloader that will be used to access attach API. This is necessary as maven
-   *          replaces the classloaders with plugin-specific ones and the attach API classes are not
-   *          the same types as the ones that are accessed within the eclipse plugin.
-   * @param deadlockMessageConsumer
-   *          A consumer that accepts messages when there is a deadlock on VM call. Normally this is
-   *          logged on WARN level or an exception is thrown.
-   */
-  public EOSGiVMManager(final ClassLoader attachAPIClassLoader,
-      final Consumer<String> deadlockMessageConsumer) {
-    this.deadlockMessageConsumer = deadlockMessageConsumer;
-    virtualMachineStatic = new VirtualMachineStaticReflect(attachAPIClassLoader);
+    this.deadlockMessageConsumer = (parameter.deadlockEventHandler != null)
+        ? parameter.deadlockEventHandler : (eventData) -> {
+          throw new RuntimeException("Could not execute command on VM. This happens sometimes"
+              + " on Windows systems when the VM stops at the same time as the command is called: "
+              + eventData.virtualMachineId);
+        };
+
+    this.attachNotSupportedExceptionDuringRefreshConsumer =
+        (parameter.attachNotSupportedExceptionDuringRefreshEventHandler != null)
+            ? parameter.attachNotSupportedExceptionDuringRefreshEventHandler
+            : (eventData) -> {
+              throw new RuntimeException(eventData.cause);
+            };
 
     refresh();
+
   }
 
   public synchronized void addStateChangeListener(final Runnable listener) {
     stateChangeListeners.add(listener);
+  }
+
+  private void attachAndProcessVM(final VirtualMachineDescriptorReflect virtualMachineDescriptor) {
+    VirtualMachineReflect virtualMachine = null;
+    try {
+      virtualMachine = virtualMachineStatic.attach(virtualMachineDescriptor);
+    } catch (RuntimeException e) {
+      if (!handleExceptionByConsumer(e, virtualMachineDescriptor.id())) {
+        throw e;
+      }
+      return;
+    }
+
+    try (VirtualMachineReflect attachedVirtualMachine = virtualMachine) {
+      processVirtualMachine(attachedVirtualMachine);
+    }
   }
 
   @SuppressWarnings("deprecation")
@@ -139,9 +158,10 @@ public class EOSGiVMManager implements Closeable {
       singleThreadExecutor.shutdown();
       singleThreadExecutor = Executors.newSingleThreadExecutor();
 
-      deadlockMessageConsumer.accept("Could not execute command on VM. This happens sometimes"
-          + " on Windows systems when the VM stops at the same time as the command is called: "
-          + vmId);
+      EOSGiVMManagerEventData eventData = new EOSGiVMManagerEventData();
+      eventData.virtualMachineId = vmId;
+      eventData.vmManager = this;
+      deadlockMessageConsumer.accept(eventData);
       return null;
     }
   }
@@ -220,6 +240,25 @@ public class EOSGiVMManager implements Closeable {
     return vmIdByLaunchId.get(uniqueLaunchId);
   }
 
+  private boolean handleExceptionByConsumer(final RuntimeException e, final String vmId) {
+    Throwable cause = e;
+
+    while (cause != null && !attachNotSupportedExceptionClass.isAssignableFrom(cause.getClass())) {
+      cause = cause.getCause();
+    }
+
+    if (cause != null) {
+      EOSGiVMManagerEventData eventData = new EOSGiVMManagerEventData();
+      eventData.cause = cause;
+      eventData.virtualMachineId = vmId;
+      eventData.vmManager = this;
+
+      attachNotSupportedExceptionDuringRefreshConsumer.accept(eventData);
+      return true;
+    }
+    return false;
+  }
+
   private boolean isParentOrSameDir(final File environmentRootDir, final File userDir) {
     File currentDir = userDir;
     while (currentDir != null) {
@@ -287,11 +326,8 @@ public class EOSGiVMManager implements Closeable {
       String vmId = virtualMachineDescriptor.id();
       aliveVMIds.add(vmId);
       if (!processedVMIds.contains(vmId)) {
-        try (VirtualMachineReflect virtualMachine =
-            virtualMachineStatic.attach(virtualMachineDescriptor)) {
-          processVirtualMachine(virtualMachine);
-        }
 
+        attachAndProcessVM(virtualMachineDescriptor);
       }
     }
     removeDeadVms(aliveVMIds);
@@ -338,7 +374,7 @@ public class EOSGiVMManager implements Closeable {
   }
 
   /**
-   * Shuts down a Java {@link VirtualMachine}.
+   * Shuts down a Java VirtualMachine.
    *
    * @param virtualMachineId
    *          The id of the virtual machine.

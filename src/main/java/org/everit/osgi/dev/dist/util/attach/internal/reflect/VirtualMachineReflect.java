@@ -18,6 +18,9 @@ package org.everit.osgi.dev.dist.util.attach.internal.reflect;
 import java.io.Closeable;
 import java.util.Properties;
 
+/**
+ * Reflection based access of the methods of a VirtualMachine instance.
+ */
 public class VirtualMachineReflect implements Closeable {
 
   private final Object wrapped;

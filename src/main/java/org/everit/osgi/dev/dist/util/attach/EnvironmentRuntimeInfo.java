@@ -17,12 +17,18 @@
 package org.everit.osgi.dev.dist.util.attach;
 
 import java.io.File;
+import java.util.Properties;
 
 import javax.annotation.Generated;
 
+/**
+ * Information of a running JVM.
+ */
 public class EnvironmentRuntimeInfo {
 
   public String jmxServiceURL;
+
+  public Properties systemProperties;
 
   public File userDir;
 
@@ -31,46 +37,26 @@ public class EnvironmentRuntimeInfo {
   @Override
   @Generated("eclipse")
   public boolean equals(final Object obj) {
-    if (this == obj) {
+    if (this == obj)
       return true;
-    }
-    if (obj == null) {
+    if (obj == null)
       return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (getClass() != obj.getClass())
       return false;
-    }
     EnvironmentRuntimeInfo other = (EnvironmentRuntimeInfo) obj;
-    if (jmxServiceURL == null) {
-      if (other.jmxServiceURL != null) {
-        return false;
-      }
-    } else if (!jmxServiceURL.equals(other.jmxServiceURL)) {
-      return false;
-    }
-    if (userDir == null) {
-      if (other.userDir != null) {
-        return false;
-      }
-    } else if (!userDir.equals(other.userDir)) {
-      return false;
-    }
     if (virtualMachineId == null) {
-      if (other.virtualMachineId != null) {
+      if (other.virtualMachineId != null)
         return false;
-      }
-    } else if (!virtualMachineId.equals(other.virtualMachineId)) {
+    } else if (!virtualMachineId.equals(other.virtualMachineId))
       return false;
-    }
     return true;
   }
 
   @Override
+  @Generated("eclipse")
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((jmxServiceURL == null) ? 0 : jmxServiceURL.hashCode());
-    result = prime * result + ((userDir == null) ? 0 : userDir.hashCode());
     result = prime * result + ((virtualMachineId == null) ? 0 : virtualMachineId.hashCode());
     return result;
   }

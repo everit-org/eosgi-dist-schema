@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -86,9 +87,18 @@ public class EOSGiVMManager implements Closeable {
 
   private final Map<String, String> vmIdByLaunchId = new HashMap<>();
 
+  /**
+   * Constructor.
+   *
+   * @param parameter
+   *          The parameters how the VMManager is instantiated. See the doc in the
+   *          {@link EOSGiVMManagerParameter} class.
+   */
   public EOSGiVMManager(final EOSGiVMManagerParameter parameter) {
     Objects.requireNonNull(parameter);
-    Objects.requireNonNull(parameter.classLoader);
+    if (parameter.classLoader == null) {
+      throw new NullPointerException();
+    }
     this.virtualMachineStatic = new VirtualMachineStaticReflect(parameter.classLoader);
     try {
       attachNotSupportedExceptionClass =
@@ -168,16 +178,35 @@ public class EOSGiVMManager implements Closeable {
 
   @Override
   public synchronized void close() {
+    if (closed) {
+      return;
+    }
     closed = true;
     singleThreadExecutor.shutdown();
-    if (this.shutdownAgentFile != null) {
-      shutdownAgentFile.delete();
+    if (this.shutdownAgentFile != null && !shutdownAgentFile.delete()) {
+      throw new UncheckedIOException(new IOException(
+          "Could not delete shutdown agent file: " + shutdownAgentFile.getAbsolutePath()));
     }
     launchIdByVmId.clear();
     processedVMIds.clear();
     environmentInfosByEnvironmentId.clear();
     environmentIdByVmId.clear();
     vmIdByLaunchId.clear();
+  }
+
+  /**
+   * Returns the information of all currently tracked environments.
+   *
+   * @return the information of all currently tracked environments.
+   */
+  public synchronized Set<EnvironmentRuntimeInfo> getRuntimeInformations() {
+    Set<EnvironmentRuntimeInfo> result = new HashSet<>();
+
+    for (Collection<EnvironmentRuntimeInfo> infos : environmentInfosByEnvironmentId.values()) {
+
+      result.addAll(infos);
+    }
+    return result;
   }
 
   /**
@@ -302,6 +331,7 @@ public class EOSGiVMManager implements Closeable {
     environmentRuntimeInfo.jmxServiceURL = jmxURL;
     environmentRuntimeInfo.userDir = new File(userDir);
     environmentRuntimeInfo.virtualMachineId = vmId;
+    environmentRuntimeInfo.systemProperties = systemProperties;
 
     Set<EnvironmentRuntimeInfo> environmentInfos =
         environmentInfosByEnvironmentId.get(environmentId);
@@ -333,11 +363,11 @@ public class EOSGiVMManager implements Closeable {
     removeDeadVms(aliveVMIds);
 
     if (!processedVMIds.equals(aliveVMIds)) {
+      processedVMIds = aliveVMIds;
       for (Runnable listener : stateChangeListeners) {
         listener.run();
       }
     }
-    processedVMIds = aliveVMIds;
   }
 
   private void removeDeadVms(final Set<String> aliveVMIds) {

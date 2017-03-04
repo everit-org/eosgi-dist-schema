@@ -15,6 +15,9 @@
  */
 package org.everit.osgi.dev.dist.util.attach.internal.reflect;
 
+/**
+ * Reflection based access of the VirtualMachineDescriptor class.
+ */
 public class VirtualMachineDescriptorReflect {
 
   private final Object wrapped;

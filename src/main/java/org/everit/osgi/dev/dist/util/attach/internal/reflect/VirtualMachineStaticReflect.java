@@ -29,8 +29,15 @@ import com.sun.tools.attach.VirtualMachineDescriptor;
 public class VirtualMachineStaticReflect {
 
   private Class<?> virtualMachineClass;
+
   private Class<?> virtualMachineDescriptorClass;
 
+  /**
+   * Constructor.
+   *
+   * @param attachAPIClassLoader
+   *          The classloader that loads the native attach API.
+   */
   public VirtualMachineStaticReflect(final ClassLoader attachAPIClassLoader) {
     try {
       virtualMachineClass = attachAPIClassLoader.loadClass(VirtualMachine.class.getName());
@@ -42,6 +49,13 @@ public class VirtualMachineStaticReflect {
     }
   }
 
+  /**
+   * Attaches a VirtualMachine and gives back its proxy instance.
+   *
+   * @param virtualMachineId
+   *          The id of the virtual machine.
+   * @return The reflection based VirtualMachine instance.
+   */
   public VirtualMachineReflect attach(final String virtualMachineId) {
 
     Object virtualMachineObj = ReflectUtil.callMethod(virtualMachineClass, "attach",
@@ -50,6 +64,14 @@ public class VirtualMachineStaticReflect {
     return new VirtualMachineReflect(virtualMachineObj);
   }
 
+  /**
+   * Attaches a JVM.
+   *
+   * @param virtualMachineDescriptorReflect
+   *          The descriptor of the JVM.
+   * @return The virtual machine embedded in the way that the classloader that loaded the Attach
+   *         native API will be used.
+   */
   public VirtualMachineReflect attach(
       final VirtualMachineDescriptorReflect virtualMachineDescriptorReflect) {
 
@@ -60,6 +82,11 @@ public class VirtualMachineStaticReflect {
     return new VirtualMachineReflect(virtualMachineObj);
   }
 
+  /**
+   * Lists the available JVMs.
+   *
+   * @return the virtual machine descriptors.
+   */
   public List<VirtualMachineDescriptorReflect> list() {
     try {
       Method method = virtualMachineClass.getMethod("list");

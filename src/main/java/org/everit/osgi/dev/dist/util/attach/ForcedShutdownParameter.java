@@ -15,6 +15,9 @@
  */
 package org.everit.osgi.dev.dist.util.attach;
 
+/**
+ * Parameters of a forced shutdown.
+ */
 public class ForcedShutdownParameter {
 
   public final int haltCode;

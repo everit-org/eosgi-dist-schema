@@ -24,12 +24,12 @@
   <parent>
     <groupId>org.everit.config</groupId>
     <artifactId>org.everit.config.oss</artifactId>
-    <version>7.3.0</version>
+    <version>7.4.0</version>
   </parent>
 
   <groupId>org.everit.osgi.dev</groupId>
   <artifactId>org.everit.osgi.dev.dist.util</artifactId>
-  <version>5.0.0</version>
+  <version>5.1.0</version>
 
   <packaging>bundle</packaging>
 
@@ -89,7 +89,7 @@
             </Import-Package>
             <Export-Package>
               org.everit.osgi.dev.dist.util;version="4.1.0",
-              org.everit.osgi.dev.dist.util.attach;version="5.0.0",
+              org.everit.osgi.dev.dist.util.attach;version="5.1.0",
               org.everit.osgi.dev.dist.util.configuration;version="4.1.0",
               org.everit.osgi.dev.dist.util.configuration.schema;version="4.1.0"
             </Export-Package>
@@ -114,6 +114,13 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <excludes>**/configuration/schema/**/*</excludes>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

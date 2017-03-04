@@ -19,8 +19,24 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+/**
+ * Helper methods to do reflection based calls.
+ */
 public final class ReflectUtil {
 
+  /**
+   * Calls a method on an object with the specific method name and parameter types.
+   *
+   * @param obj
+   *          The object instance.
+   * @param methodName
+   *          The name of the method.
+   * @param parameterTypes
+   *          The type of the parameters of the method.
+   * @param args
+   *          The parameter instances.
+   * @return The return value of the method.
+   */
   public static <R> R callMethod(final Object obj, final String methodName,
       final Class<?>[] parameterTypes, final Object... args) {
 
@@ -37,6 +53,16 @@ public final class ReflectUtil {
 
   }
 
+  /**
+   * Creates a proxy instance that passes each method calls to the target object. By using a proxy
+   * the object can be loaded with one classLoader and the interface with another.
+   *
+   * @param interfaze
+   *          The interface that the proxy instance implements.
+   * @param object
+   *          The object that implements the methods specified in the interface.
+   * @return The proxy instance.
+   */
   public static <T> T createProxy(final Class<T> interfaze, final Object object) {
     @SuppressWarnings("unchecked")
     T result = (T) Proxy.newProxyInstance(interfaze.getClassLoader(), new Class[] { interfaze },

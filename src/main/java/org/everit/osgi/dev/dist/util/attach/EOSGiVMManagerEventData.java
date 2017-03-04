@@ -15,6 +15,9 @@
  */
 package org.everit.osgi.dev.dist.util.attach;
 
+/**
+ * Event data that is thrown by the EOSGiVMManager in case of exceptions.
+ */
 public class EOSGiVMManagerEventData {
 
   public Throwable cause;

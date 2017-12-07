@@ -16,16 +16,12 @@
 package org.everit.osgi.dev.dist.util.attach;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Execution parameters of EOSGVMManager.
  */
 public class EOSGiVMManagerParameter {
-
-  /**
-   * Consumer that is called if an AttachNotSupportedException is thrown by the VirtualMachine.
-   */
-  public Consumer<EOSGiVMManagerEventData> attachNotSupportedExceptionDuringRefreshEventHandler;
 
   /**
    * The classloader that will be used to access attach API. This is necessary as maven replaces the
@@ -39,5 +35,10 @@ public class EOSGiVMManagerParameter {
    * on WARN level or an exception is thrown.
    */
   public Consumer<EOSGiVMManagerEventData> deadlockEventHandler;
+
+  /**
+   * Consumer that is called if an exception is thrown during attaching a VirtualMachine.
+   */
+  public Function<EOSGiVMManagerEventData, Boolean> exceptionDuringAttachVMHandler;
 
 }

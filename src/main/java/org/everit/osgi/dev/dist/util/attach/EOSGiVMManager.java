@@ -42,14 +42,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.everit.osgi.dev.dist.util.DistConstants;
 import org.everit.osgi.dev.dist.util.attach.internal.reflect.VirtualMachineDescriptorReflect;
 import org.everit.osgi.dev.dist.util.attach.internal.reflect.VirtualMachineReflect;
 import org.everit.osgi.dev.dist.util.attach.internal.reflect.VirtualMachineStaticReflect;
-
-import com.sun.tools.attach.AttachNotSupportedException;
 
 /**
  * Tracks virtual machines that run EOSGi environment.
@@ -60,9 +59,26 @@ public class EOSGiVMManager implements Closeable {
 
   private static final long DEFAULT_VM_CALL_TIMEOUT = 3000;
 
-  private Class<?> attachNotSupportedExceptionClass;
+  /**
+   * Static method to list the id of all available virtual machines.
+   *
+   * @param classLoader
+   *          The {@link ClassLoader} to use Attach API.
+   * @return the ids of the available VMs. If empty, it might mean that TMPDIR/hsperfdata_USERNAME
+   *         folder is somehow corrupted or -XX:+PerfDisableSharedMem is present on all VMs.
+   */
+  public static Collection<String> getAvailableVMIds(final ClassLoader classLoader) {
+    VirtualMachineStaticReflect virtualMachineStaticReflect =
+        new VirtualMachineStaticReflect(classLoader);
 
-  private final Consumer<EOSGiVMManagerEventData> attachNotSupportedExceptionDuringRefreshConsumer;
+    List<VirtualMachineDescriptorReflect> vms = virtualMachineStaticReflect.list();
+    Set<String> result = new HashSet<>();
+
+    for (VirtualMachineDescriptorReflect virtualMachineDescriptorReflect : vms) {
+      result.add(virtualMachineDescriptorReflect.id());
+    }
+    return result;
+  }
 
   private boolean closed = false;
 
@@ -72,6 +88,8 @@ public class EOSGiVMManager implements Closeable {
 
   private final Map<String, Set<EnvironmentRuntimeInfo>> environmentInfosByEnvironmentId =
       new HashMap<>();
+
+  private final Function<EOSGiVMManagerEventData, Boolean> exceptionDuringAttachVMHandler;
 
   private final Map<String, String> launchIdByVmId = new HashMap<>();
 
@@ -100,26 +118,19 @@ public class EOSGiVMManager implements Closeable {
       throw new NullPointerException();
     }
     this.virtualMachineStatic = new VirtualMachineStaticReflect(parameter.classLoader);
-    try {
-      attachNotSupportedExceptionClass =
-          parameter.classLoader.loadClass(AttachNotSupportedException.class.getName());
-    } catch (ClassNotFoundException e) {
-      throw new RuntimeException(e);
-    }
 
     this.deadlockMessageConsumer = (parameter.deadlockEventHandler != null)
-        ? parameter.deadlockEventHandler : (eventData) -> {
+        ? parameter.deadlockEventHandler
+        : (eventData) -> {
           throw new RuntimeException("Could not execute command on VM. This happens sometimes"
               + " on Windows systems when the VM stops at the same time as the command is called: "
               + eventData.virtualMachineId);
         };
 
-    this.attachNotSupportedExceptionDuringRefreshConsumer =
-        (parameter.attachNotSupportedExceptionDuringRefreshEventHandler != null)
-            ? parameter.attachNotSupportedExceptionDuringRefreshEventHandler
-            : (eventData) -> {
-              throw new RuntimeException(eventData.cause);
-            };
+    this.exceptionDuringAttachVMHandler =
+        (parameter.exceptionDuringAttachVMHandler != null)
+            ? parameter.exceptionDuringAttachVMHandler
+            : (eventData) -> false;
 
     refresh();
 
@@ -270,22 +281,12 @@ public class EOSGiVMManager implements Closeable {
   }
 
   private boolean handleExceptionByConsumer(final RuntimeException e, final String vmId) {
-    Throwable cause = e;
+    EOSGiVMManagerEventData eventData = new EOSGiVMManagerEventData();
+    eventData.cause = e;
+    eventData.virtualMachineId = vmId;
+    eventData.vmManager = this;
 
-    while (cause != null && !attachNotSupportedExceptionClass.isAssignableFrom(cause.getClass())) {
-      cause = cause.getCause();
-    }
-
-    if (cause != null) {
-      EOSGiVMManagerEventData eventData = new EOSGiVMManagerEventData();
-      eventData.cause = cause;
-      eventData.virtualMachineId = vmId;
-      eventData.vmManager = this;
-
-      attachNotSupportedExceptionDuringRefreshConsumer.accept(eventData);
-      return true;
-    }
-    return false;
+    return exceptionDuringAttachVMHandler.apply(eventData);
   }
 
   private boolean isParentOrSameDir(final File environmentRootDir, final File userDir) {

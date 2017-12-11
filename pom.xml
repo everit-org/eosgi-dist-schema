@@ -126,7 +126,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <additionalparam>-Xdoclint:none</additionalparam>
+          <additionalparam>-Xdoclint:none --allow-script-in-comments</additionalparam>
+          <sourcepath>${project.basedir}/src/main/java:${project.basedir}/src/main/generated/java</sourcepath>
         </configuration>
       </plugin>
     </plugins>

@@ -79,6 +79,9 @@ public class DistributedEnvironmentConfigurationProvider {
     }
 
     LaunchConfigType launchConfig = overriddenDistributionPackage.getLaunchConfig();
+    if (launchConfig == null) {
+      return null;
+    }
 
     String mainClass = launchConfig.getMainClass();
     String classpath = launchConfig.getClassPath();
@@ -127,6 +130,9 @@ public class DistributedEnvironmentConfigurationProvider {
     }
 
     LaunchConfigType launchConfig = distributionPackageType.getLaunchConfig();
+    if (launchConfig == null) {
+      return distributionPackageType;
+    }
 
     LaunchConfigOverridesType launchConfigOverrides = launchConfig.getOverrides();
     if (launchConfigOverrides == null) {
